@@ -1,0 +1,84 @@
+[package]
+name = "solana-program-runtime"
+description = "Solana program runtime"
+documentation = "https://docs.rs/solana-program-runtime"
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+base64 = { workspace = true }
+bincode = { workspace = true }
+enum-iterator = { workspace = true }
+itertools = { workspace = true }
+log = { workspace = true }
+percentage = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+solana-account = { workspace = true, features = ["bincode"] }
+solana-clock = { workspace = true }
+solana-compute-budget = { workspace = true }
+solana-epoch-rewards = { workspace = true }
+solana-epoch-schedule = { workspace = true }
+solana-feature-set = { workspace = true }
+solana-frozen-abi = { workspace = true, optional = true, features = [
+    "frozen-abi",
+] }
+solana-frozen-abi-macro = { workspace = true, optional = true, features = [
+    "frozen-abi",
+] }
+solana-hash = { workspace = true }
+solana-instruction = { workspace = true }
+solana-last-restart-slot = { workspace = true }
+solana-log-collector = { workspace = true }
+solana-measure = { workspace = true }
+solana-metrics = { workspace = true, optional = true }
+solana-precompiles = { workspace = true }
+solana-pubkey = { workspace = true }
+solana-rent = { workspace = true }
+solana-sbpf = { workspace = true }
+solana-sdk-ids = { workspace = true }
+solana-slot-hashes = { workspace = true }
+solana-stable-layout = { workspace = true }
+solana-sysvar = { workspace = true }
+solana-sysvar-id = { workspace = true }
+solana-timings = { workspace = true }
+solana-transaction-context = { workspace = true }
+solana-type-overrides = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+assert_matches = { workspace = true }
+solana-compute-budget = { workspace = true, features = ["dev-context-only-utils"] }
+solana-instruction = { workspace = true, features = ["bincode"] }
+solana-pubkey = { workspace = true, features = ["rand"] }
+solana-transaction-context = { workspace = true, features = [
+    "dev-context-only-utils",
+] }
+test-case = { workspace = true }
+
+[lib]
+crate-type = ["lib"]
+name = "solana_program_runtime"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[features]
+dummy-for-ci-check = ["metrics"]
+frozen-abi = [
+    "dep:solana-frozen-abi",
+    "dep:solana-frozen-abi-macro",
+    "solana-compute-budget/frozen-abi",
+]
+metrics = ["dep:solana-metrics"]
+shuttle-test = [
+    "solana-type-overrides/shuttle-test",
+    "solana-sbpf/shuttle-test",
+]
+
+[lints]
+workspace = true
