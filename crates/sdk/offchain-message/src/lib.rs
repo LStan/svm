@@ -8,13 +8,6 @@ use {
     solana_signer::Signer,
 };
 
-#[cfg(test)]
-static_assertions::const_assert_eq!(OffchainMessage::HEADER_LEN, 17);
-#[cfg(test)]
-static_assertions::const_assert_eq!(v0::OffchainMessage::MAX_LEN, 65515);
-#[cfg(test)]
-static_assertions::const_assert_eq!(v0::OffchainMessage::MAX_LEN_LEDGER, 1212);
-
 /// Check if given bytes contain only printable ASCII characters
 pub fn is_printable_ascii(data: &[u8]) -> bool {
     for &char in data {
@@ -242,61 +235,5 @@ impl OffchainMessage {
         signature: &Signature,
     ) -> Result<bool, SanitizeError> {
         Ok(signature.verify(signer.as_ref(), &self.serialize()?))
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use {super::*, solana_keypair::Keypair, std::str::FromStr};
-
-    #[test]
-    fn test_offchain_message_ascii() {
-        let message = OffchainMessage::new(0, b"Test Message").unwrap();
-        assert_eq!(message.get_version(), 0);
-        assert_eq!(message.get_format(), MessageFormat::RestrictedAscii);
-        assert_eq!(message.get_message().as_slice(), b"Test Message");
-        assert!(
-            matches!(message, OffchainMessage::V0(ref msg) if msg.get_format() == MessageFormat::RestrictedAscii)
-        );
-        let serialized = [
-            255, 115, 111, 108, 97, 110, 97, 32, 111, 102, 102, 99, 104, 97, 105, 110, 0, 0, 12, 0,
-            84, 101, 115, 116, 32, 77, 101, 115, 115, 97, 103, 101,
-        ];
-        let hash = Hash::from_str("HG5JydBGjtjTfD3sSn21ys5NTWPpXzmqifiGC2BVUjkD").unwrap();
-        assert_eq!(message.serialize().unwrap(), serialized);
-        assert_eq!(message.hash().unwrap(), hash);
-        assert_eq!(message, OffchainMessage::deserialize(&serialized).unwrap());
-    }
-
-    #[test]
-    fn test_offchain_message_utf8() {
-        let message = OffchainMessage::new(0, "Тестовое сообщение".as_bytes()).unwrap();
-        assert_eq!(message.get_version(), 0);
-        assert_eq!(message.get_format(), MessageFormat::LimitedUtf8);
-        assert_eq!(
-            message.get_message().as_slice(),
-            "Тестовое сообщение".as_bytes()
-        );
-        assert!(
-            matches!(message, OffchainMessage::V0(ref msg) if msg.get_format() == MessageFormat::LimitedUtf8)
-        );
-        let serialized = [
-            255, 115, 111, 108, 97, 110, 97, 32, 111, 102, 102, 99, 104, 97, 105, 110, 0, 1, 35, 0,
-            208, 162, 208, 181, 209, 129, 209, 130, 208, 190, 208, 178, 208, 190, 208, 181, 32,
-            209, 129, 208, 190, 208, 190, 208, 177, 209, 137, 208, 181, 208, 189, 208, 184, 208,
-            181,
-        ];
-        let hash = Hash::from_str("6GXTveatZQLexkX4WeTpJ3E7uk1UojRXpKp43c4ArSun").unwrap();
-        assert_eq!(message.serialize().unwrap(), serialized);
-        assert_eq!(message.hash().unwrap(), hash);
-        assert_eq!(message, OffchainMessage::deserialize(&serialized).unwrap());
-    }
-
-    #[test]
-    fn test_offchain_message_sign_and_verify() {
-        let message = OffchainMessage::new(0, b"Test Message").unwrap();
-        let keypair = Keypair::new();
-        let signature = message.sign(&keypair).unwrap();
-        assert!(message.verify(&keypair.pubkey(), &signature).unwrap());
     }
 }

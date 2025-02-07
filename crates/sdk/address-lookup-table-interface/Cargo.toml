@@ -29,12 +29,6 @@ solana-slot-hashes = { workspace = true }
 [target.'cfg(not(target_os = "solana"))'.dependencies]
 solana-pubkey = { workspace = true, features = ["curve25519"] }
 
-[dev-dependencies]
-solana-address-lookup-table-interface = { path = ".", features = [
-    "dev-context-only-utils",
-] }
-solana-hash = { workspace = true }
-
 [features]
 bincode = [
     "dep:bincode",

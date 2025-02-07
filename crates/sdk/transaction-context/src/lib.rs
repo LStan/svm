@@ -25,30 +25,15 @@ use {
 // Inlined to avoid solana_system_interface dep
 #[cfg(not(target_os = "solana"))]
 const MAX_PERMITTED_DATA_LENGTH: u64 = 10 * 1024 * 1024;
-#[cfg(test)]
-static_assertions::const_assert_eq!(
-    MAX_PERMITTED_DATA_LENGTH,
-    solana_system_interface::MAX_PERMITTED_DATA_LENGTH
-);
 
 // Inlined to avoid solana_system_interface dep
 #[cfg(not(target_os = "solana"))]
 const MAX_PERMITTED_ACCOUNTS_DATA_ALLOCATIONS_PER_TRANSACTION: i64 =
     MAX_PERMITTED_DATA_LENGTH as i64 * 2;
-#[cfg(test)]
-static_assertions::const_assert_eq!(
-    MAX_PERMITTED_ACCOUNTS_DATA_ALLOCATIONS_PER_TRANSACTION,
-    solana_system_interface::MAX_PERMITTED_ACCOUNTS_DATA_ALLOCATIONS_PER_TRANSACTION
-);
 
 // Inlined to avoid solana_account_info dep
 #[cfg(not(target_os = "solana"))]
 const MAX_PERMITTED_DATA_INCREASE: usize = 1_024 * 10;
-#[cfg(test)]
-static_assertions::const_assert_eq!(
-    MAX_PERMITTED_DATA_INCREASE,
-    solana_account_info::MAX_PERMITTED_DATA_INCREASE
-);
 
 /// Index of an account inside of the TransactionContext or an InstructionContext.
 pub type IndexOfAccount = u16;

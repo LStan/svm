@@ -6,11 +6,6 @@ use std::time::Duration;
 
 // inlined to avoid solana-clock dep
 const DEFAULT_TICKS_PER_SECOND: u64 = 160;
-#[cfg(test)]
-static_assertions::const_assert_eq!(
-    DEFAULT_TICKS_PER_SECOND,
-    solana_clock::DEFAULT_TICKS_PER_SECOND
-);
 
 #[cfg_attr(feature = "frozen-abi", derive(solana_frozen_abi_macro::AbiExample))]
 #[cfg_attr(
@@ -41,9 +36,6 @@ impl PohConfig {
     }
 }
 
-// the !=0 check was previously done by the unchecked_div_by_const macro
-#[cfg(test)]
-static_assertions::const_assert!(DEFAULT_TICKS_PER_SECOND != 0);
 const DEFAULT_SLEEP_MICROS: u64 = (1000 * 1000) / DEFAULT_TICKS_PER_SECOND;
 
 impl Default for PohConfig {

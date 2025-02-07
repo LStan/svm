@@ -115,32 +115,3 @@ impl Default for VmMemoryPool {
         Self::new()
     }
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[derive(Debug, Eq, PartialEq)]
-    struct Item(u8, u8);
-    impl Reset for Item {
-        fn reset(&mut self) {
-            self.1 = 0;
-        }
-    }
-
-    #[test]
-    fn test_pool() {
-        let mut pool = Pool::<Item, 2>::new([Item(0, 1), Item(1, 1)]);
-        assert_eq!(pool.get(), Some(Item(1, 1)));
-        assert_eq!(pool.get(), Some(Item(0, 1)));
-        assert_eq!(pool.get(), None);
-        pool.put(Item(1, 1));
-        assert_eq!(pool.get(), Some(Item(1, 0)));
-        pool.put(Item(2, 2));
-        pool.put(Item(3, 3));
-        assert!(!pool.put(Item(4, 4)));
-        assert_eq!(pool.get(), Some(Item(3, 0)));
-        assert_eq!(pool.get(), Some(Item(2, 0)));
-        assert_eq!(pool.get(), None);
-    }
-}

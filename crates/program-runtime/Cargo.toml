@@ -16,7 +16,7 @@ enum-iterator = { workspace = true }
 itertools = { workspace = true }
 log = { workspace = true }
 percentage = { workspace = true }
-rand = { workspace = true }
+# rand = { workspace = true }
 serde = { workspace = true }
 solana-account = { workspace = true, features = ["bincode"] }
 solana-clock = { workspace = true }
@@ -49,16 +49,6 @@ solana-timings = { workspace = true }
 solana-transaction-context = { workspace = true }
 solana-type-overrides = { workspace = true }
 thiserror = { workspace = true }
-
-[dev-dependencies]
-assert_matches = { workspace = true }
-solana-compute-budget = { workspace = true, features = ["dev-context-only-utils"] }
-solana-instruction = { workspace = true, features = ["bincode"] }
-solana-pubkey = { workspace = true, features = ["rand"] }
-solana-transaction-context = { workspace = true, features = [
-    "dev-context-only-utils",
-] }
-test-case = { workspace = true }
 
 [lib]
 crate-type = ["lib"]

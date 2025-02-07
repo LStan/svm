@@ -16,15 +16,5 @@ solana-instruction = { workspace = true, default-features = false, features = [
 solana-pubkey = { workspace = true, default-features = false }
 solana-sanitize = { workspace = true }
 
-[dev-dependencies]
-bincode = { workspace = true }
-borsh = { workspace = true }
-rand = { workspace = true }
-serde = { workspace = true }
-solana-pubkey = { workspace = true, default-features = false, features = [
-    "borsh",
-    "serde",
-] }
-
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

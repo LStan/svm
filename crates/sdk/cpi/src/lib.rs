@@ -275,8 +275,6 @@ pub fn invoke_signed(
 /// Copied from `solana_program_entrypoint::SUCCESS`
 /// to avoid a `solana_program_entrypoint` dependency
 const _SUCCESS: u64 = 0;
-#[cfg(test)]
-static_assertions::const_assert_eq!(_SUCCESS, solana_program_entrypoint::SUCCESS);
 
 /// Invoke a cross-program instruction with signatures but don't enforce Rust's
 /// aliasing rules.

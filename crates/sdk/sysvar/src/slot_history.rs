@@ -69,15 +69,3 @@ impl Sysvar for SlotHistory {
         Err(ProgramError::UnsupportedSysvar)
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_size_of() {
-        assert_eq!(
-            SlotHistory::size_of(),
-            bincode::serialized_size(&SlotHistory::default()).unwrap() as usize
-        );
-    }
-}

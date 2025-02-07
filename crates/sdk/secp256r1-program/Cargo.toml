@@ -19,10 +19,6 @@ solana-sdk-ids = { workspace = true }
 solana-instruction = { workspace = true, features = ["std"] }
 openssl = { workspace = true }
 
-[dev-dependencies]
-solana-logger = { workspace = true }
-solana-sdk = { path = "../sdk" }
-
 [features]
 default = []
 openssl-vendored = ["openssl/vendored"]

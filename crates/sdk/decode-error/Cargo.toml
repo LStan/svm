@@ -11,6 +11,3 @@ edition = { workspace = true }
 
 [dependencies]
 num-traits = { workspace = true }
-
-[dev-dependencies]
-num-derive = { workspace = true }

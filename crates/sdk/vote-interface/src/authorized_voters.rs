@@ -1,5 +1,3 @@
-#[cfg(test)]
-use arbitrary::Arbitrary;
 #[cfg(feature = "serde")]
 use serde_derive::{Deserialize, Serialize};
 use {solana_clock::Epoch, solana_pubkey::Pubkey, std::collections::BTreeMap};
@@ -7,7 +5,6 @@ use {solana_clock::Epoch, solana_pubkey::Pubkey, std::collections::BTreeMap};
 #[cfg_attr(feature = "frozen-abi", derive(solana_frozen_abi_macro::AbiExample))]
 #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
-#[cfg_attr(test, derive(Arbitrary))]
 pub struct AuthorizedVoters {
     authorized_voters: BTreeMap<Epoch, Pubkey>,
 }

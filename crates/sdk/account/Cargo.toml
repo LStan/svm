@@ -25,9 +25,6 @@ solana-pubkey = { workspace = true }
 solana-sdk-ids = { workspace = true }
 solana-sysvar = { workspace = true, features = ["bincode"], optional = true }
 
-[dev-dependencies]
-solana-account = { path = ".", features = ["dev-context-only-utils"] }
-
 [features]
 bincode = [
     "dep:bincode",

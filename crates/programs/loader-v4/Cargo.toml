@@ -28,11 +28,6 @@ solana-sdk-ids = { workspace = true }
 solana-transaction-context = { workspace = true }
 solana-type-overrides = { workspace = true }
 
-[dev-dependencies]
-bincode = { workspace = true }
-solana-clock = { workspace = true }
-solana-sysvar = { workspace = true }
-
 [lib]
 crate-type = ["lib"]
 name = "solana_loader_v4_program"

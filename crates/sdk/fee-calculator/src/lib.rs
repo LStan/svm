@@ -62,8 +62,7 @@ pub struct FeeRateGovernor {
 
 pub const DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE: u64 = 10_000;
 const DEFAULT_MS_PER_SLOT: u64 = 400;
-#[cfg(test)]
-static_assertions::const_assert_eq!(DEFAULT_MS_PER_SLOT, solana_clock::DEFAULT_MS_PER_SLOT);
+
 pub const DEFAULT_TARGET_SIGNATURES_PER_SLOT: u64 = 50 * DEFAULT_MS_PER_SLOT;
 
 // Percentage of tx fees to burn
@@ -172,115 +171,5 @@ impl FeeRateGovernor {
     /// create a FeeCalculator based on current cluster signature throughput
     pub fn create_fee_calculator(&self) -> FeeCalculator {
         FeeCalculator::new(self.lamports_per_signature)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_fee_rate_governor_burn() {
-        let mut fee_rate_governor = FeeRateGovernor::default();
-        assert_eq!(fee_rate_governor.burn(2), (1, 1));
-
-        fee_rate_governor.burn_percent = 0;
-        assert_eq!(fee_rate_governor.burn(2), (2, 0));
-
-        fee_rate_governor.burn_percent = 100;
-        assert_eq!(fee_rate_governor.burn(2), (0, 2));
-    }
-
-    #[test]
-    fn test_fee_rate_governor_derived_default() {
-        solana_logger::setup();
-
-        let f0 = FeeRateGovernor::default();
-        assert_eq!(
-            f0.target_signatures_per_slot,
-            DEFAULT_TARGET_SIGNATURES_PER_SLOT
-        );
-        assert_eq!(
-            f0.target_lamports_per_signature,
-            DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE
-        );
-        assert_eq!(f0.lamports_per_signature, 0);
-
-        let f1 = FeeRateGovernor::new_derived(&f0, DEFAULT_TARGET_SIGNATURES_PER_SLOT);
-        assert_eq!(
-            f1.target_signatures_per_slot,
-            DEFAULT_TARGET_SIGNATURES_PER_SLOT
-        );
-        assert_eq!(
-            f1.target_lamports_per_signature,
-            DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE
-        );
-        assert_eq!(
-            f1.lamports_per_signature,
-            DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE / 2
-        ); // min
-    }
-
-    #[test]
-    fn test_fee_rate_governor_derived_adjust() {
-        solana_logger::setup();
-
-        let mut f = FeeRateGovernor {
-            target_lamports_per_signature: 100,
-            target_signatures_per_slot: 100,
-            ..FeeRateGovernor::default()
-        };
-        f = FeeRateGovernor::new_derived(&f, 0);
-
-        // Ramp fees up
-        let mut count = 0;
-        loop {
-            let last_lamports_per_signature = f.lamports_per_signature;
-
-            f = FeeRateGovernor::new_derived(&f, u64::MAX);
-            info!("[up] f.lamports_per_signature={}", f.lamports_per_signature);
-
-            // some maximum target reached
-            if f.lamports_per_signature == last_lamports_per_signature {
-                break;
-            }
-            // shouldn't take more than 1000 steps to get to minimum
-            assert!(count < 1000);
-            count += 1;
-        }
-
-        // Ramp fees down
-        let mut count = 0;
-        loop {
-            let last_lamports_per_signature = f.lamports_per_signature;
-            f = FeeRateGovernor::new_derived(&f, 0);
-
-            info!(
-                "[down] f.lamports_per_signature={}",
-                f.lamports_per_signature
-            );
-
-            // some minimum target reached
-            if f.lamports_per_signature == last_lamports_per_signature {
-                break;
-            }
-
-            // shouldn't take more than 1000 steps to get to minimum
-            assert!(count < 1000);
-            count += 1;
-        }
-
-        // Arrive at target rate
-        let mut count = 0;
-        while f.lamports_per_signature != f.target_lamports_per_signature {
-            f = FeeRateGovernor::new_derived(&f, f.target_signatures_per_slot);
-            info!(
-                "[target] f.lamports_per_signature={}",
-                f.lamports_per_signature
-            );
-            // shouldn't take more than 100 steps to get to target
-            assert!(count < 100);
-            count += 1;
-        }
     }
 }

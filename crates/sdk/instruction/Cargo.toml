@@ -27,9 +27,6 @@ getrandom = { workspace = true, features = ["js", "wasm-bindgen"] }
 js-sys = { workspace = true }
 wasm-bindgen = { workspace = true }
 
-[dev-dependencies]
-solana-instruction = { path = ".", features = ["borsh"] }
-
 [features]
 bincode = ["dep:bincode", "dep:serde"]
 borsh = ["dep:borsh"]

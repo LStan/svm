@@ -46,16 +46,6 @@ solana-program-memory = { workspace = true }
 [target.'cfg(target_os = "solana")'.dependencies]
 solana-define-syscall = { workspace = true }
 
-[dev-dependencies]
-anyhow = { workspace = true }
-serial_test = { workspace = true }
-solana-msg = { workspace = true }
-solana-program = { path = "../program" }
-solana-sdk = { path = "../sdk" }
-solana-sha256-hasher = { workspace = true }
-solana-sysvar = { path = ".", features = ["dev-context-only-utils"] }
-test-case = { workspace = true }
-
 [features]
 bincode = ["dep:bincode", "serde", "solana-stake-interface/bincode"]
 bytemuck = ["dep:bytemuck", "dep:bytemuck_derive"]

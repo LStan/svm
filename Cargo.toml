@@ -128,13 +128,10 @@ members = [
 [workspace.dependencies]
 ahash = "0.8.11"
 arbitrary = "1.4.1"
-anyhow = "1.0.95"
 ark-bn254 = "0.4.0"
 ark-ec = "0.4.0"
 ark-ff = "0.4.0"
 ark-serialize = "0.4.0"
-array-bytes = "=1.4.1"
-assert_matches = "1.5.0"
 base64 = "0.22.1"
 bincode = "1.3.3"
 bitflags = { version = "2.8.0" }
@@ -149,7 +146,6 @@ cfg_eval = "0.1.2"
 chrono = { version = "0.4.39", default-features = false }
 console_error_panic_hook = "0.1.7"
 console_log = "0.2.2"
-criterion = "0.5.1"
 crossbeam-channel = "0.5.14"
 curve25519-dalek = { version = "4.1.3", features = ["digest", "rand_core"] }
 derivation-path = { version = "0.2.0", default-features = false }
@@ -164,7 +160,6 @@ futures = "0.3.31"
 gethostname = "0.2.3"
 getrandom = "0.2.10"
 hmac = "0.12.1"
-hex = "0.4.3"
 itertools = "0.12.1"
 im = "15.1.0"
 js-sys = "0.3.77"
@@ -186,8 +181,6 @@ parking_lot = "0.12"
 pbkdf2 = { version = "0.11.0", default-features = false }
 percentage = "0.1.0"
 proc-macro2 = "1.0.93"
-proptest = "1.6"
-prost = "0.11.9"
 qstring = "0.7.2"
 qualifier_attr = { version = "0.2.2", default-features = false }
 quote = "1.0"
@@ -201,7 +194,6 @@ serde_bytes = "0.11.15"
 serde_derive = "1.0.217" # must match the serde version, see https://github.com/serde-rs/serde/issues/2584#issuecomment-1685252251
 serde_json = "1.0.138"
 serde_with = { version = "3.12.0", default-features = false }
-serial_test = "2.0.0"
 sha2 = "0.10.8"
 sha3 = "0.10.8"
 shuttle = "0.7.1"
@@ -326,14 +318,9 @@ solana-type-overrides = { path = "crates/type-overrides", version = "=2.2.0" }
 solana-validator-exit = { path = "crates/sdk/validator-exit", version = "=2.2.0" }
 solana-vote-interface = { path = "crates/sdk/vote-interface", version = "=2.2.0" }
 solana-vote-program = { path = "crates/programs/vote", version = "=2.2.0", default-features = false }
-static_assertions = "1.1.0"
-strum = "0.24"
-strum_macros = "0.24"
 subtle = "2.6.1"
 syn = "2.0"
-test-case = "3.3.1"
 thiserror = "2.0.11"
-tiny-bip39 = "0.8.2"
 uriparse = "0.6.4"
 wasm-bindgen = "0.2"
 
@@ -398,45 +385,6 @@ thiserror = { workspace = true }
 crate-type = ["lib"]
 name = "solana_svm"
 
-[dev-dependencies]
-assert_matches = { workspace = true }
-bincode = { workspace = true }
-ed25519-dalek = { workspace = true }
-lazy_static = { workspace = true }
-libsecp256k1 = { workspace = true }
-openssl = { workspace = true }
-prost = { workspace = true }
-rand0-7 = { workspace = true }
-shuttle = { workspace = true }
-solana-clock = { workspace = true }
-solana-compute-budget = { workspace = true, features = ["dev-context-only-utils"] }
-solana-compute-budget-interface = { workspace = true }
-solana-compute-budget-program = { workspace = true }
-solana-ed25519-program = { workspace = true }
-solana-epoch-schedule = { workspace = true }
-solana-fee-calculator = { workspace = true }
-solana-keypair = { workspace = true }
-solana-logger = { workspace = true }
-solana-native-token = { workspace = true }
-solana-pubkey = { workspace = true }
-solana-rent = { workspace = true }
-solana-reserved-account-keys = { workspace = true }
-solana-sbpf = { workspace = true }
-solana-sdk = { workspace = true, features = ["dev-context-only-utils"] }
-solana-secp256k1-program = { workspace = true }
-solana-secp256r1-program = { workspace = true, features = ["openssl-vendored"] }
-solana-signature = { workspace = true }
-solana-signer = { workspace = true }
-# # See order-crates-for-publishing.py for using this unusual `path = "."`
-solana-svm = { path = ".", features = ["dev-context-only-utils"] }
-# solana-svm-conformance = { workspace = true }
-# solana-system-program = { workspace = true }
-solana-system-transaction = { workspace = true }
-solana-sysvar = { workspace = true }
-solana-transaction = { workspace = true }
-test-case = { workspace = true }
-
-
 [workspace.lints.rust.unexpected_cfgs]
 level = "warn"
 check-cfg = [
@@ -456,7 +404,6 @@ frozen-abi = [
     "solana-program-runtime/frozen-abi",
     "solana-sdk/frozen-abi",
 ]
-
 
 [patch.crates-io]
 # for details, see https://github.com/anza-xyz/crossbeam/commit/fd279d707025f0e60951e429bf778b4813d1b6bf

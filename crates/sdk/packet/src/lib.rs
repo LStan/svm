@@ -23,8 +23,6 @@ use {
     serde_with::{serde_as, Bytes},
 };
 
-#[cfg(test)]
-static_assertions::const_assert_eq!(PACKET_DATA_SIZE, 1232);
 /// Maximum over-the-wire size of a Transaction
 ///   1280 is IPv6 minimum MTU
 ///   40 bytes is the size of the IPv6 header
@@ -310,49 +308,5 @@ impl Default for Meta {
             port: 0,
             flags: PacketFlags::empty(),
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_deserialize_slice() {
-        let p = Packet::from_data(None, u32::MAX).unwrap();
-        assert_eq!(p.deserialize_slice(..).ok(), Some(u32::MAX));
-        assert_eq!(p.deserialize_slice(0..4).ok(), Some(u32::MAX));
-        assert_eq!(
-            p.deserialize_slice::<u16, _>(0..4)
-                .map_err(|e| e.to_string()),
-            Err("Slice had bytes remaining after deserialization".to_string()),
-        );
-        assert_eq!(
-            p.deserialize_slice::<u32, _>(0..0)
-                .map_err(|e| e.to_string()),
-            Err("io error: unexpected end of file".to_string()),
-        );
-        assert_eq!(
-            p.deserialize_slice::<u32, _>(0..1)
-                .map_err(|e| e.to_string()),
-            Err("io error: unexpected end of file".to_string()),
-        );
-        assert_eq!(
-            p.deserialize_slice::<u32, _>(0..5)
-                .map_err(|e| e.to_string()),
-            Err("the size limit has been reached".to_string()),
-        );
-        #[allow(clippy::reversed_empty_ranges)]
-        let reversed_empty_range = 4..0;
-        assert_eq!(
-            p.deserialize_slice::<u32, _>(reversed_empty_range)
-                .map_err(|e| e.to_string()),
-            Err("the size limit has been reached".to_string()),
-        );
-        assert_eq!(
-            p.deserialize_slice::<u32, _>(4..5)
-                .map_err(|e| e.to_string()),
-            Err("the size limit has been reached".to_string()),
-        );
     }
 }

@@ -19,10 +19,6 @@ serde_with = { workspace = true, optional = true, features = ["macros"] }
 solana-frozen-abi = { workspace = true, optional = true, features = ["frozen-abi"] }
 solana-frozen-abi-macro = { workspace = true, optional = true, features = ["frozen-abi"] }
 
-[dev-dependencies]
-solana-packet = { path = ".", features = ["dev-context-only-utils"] }
-static_assertions = { workspace = true }
-
 [features]
 bincode = ["dep:bincode", "serde"]
 dev-context-only-utils = ["bincode"]

@@ -22,11 +22,6 @@ solana-pubkey = { workspace = true }
 solana-rent = { workspace = true }
 solana-sdk-ids = { workspace = true }
 
-[dev-dependencies]
-assert_matches = { workspace = true }
-solana-logger = { workspace = true }
-solana-pubkey = { workspace = true, features = ["rand"] }
-
 [features]
 frozen-abi = ["dep:solana-frozen-abi", "dep:solana-frozen-abi-macro"]
 serde = [

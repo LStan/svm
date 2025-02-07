@@ -32,29 +32,12 @@ solana-transaction-context = { workspace = true, features = ["bincode"] }
 solana-type-overrides = { workspace = true }
 solana-vote-interface = { workspace = true, features = ["bincode"] }
 
-[dev-dependencies]
-assert_matches = { workspace = true }
-criterion = { workspace = true }
-proptest = { workspace = true }
-solana-compute-budget = { workspace = true }
-solana-epoch-rewards = { workspace = true }
-solana-epoch-schedule = { workspace = true }
-solana-logger = { workspace = true }
-solana-pubkey = { workspace = true, features = ["rand"] }
-solana-sysvar-id = { workspace = true }
-solana-vote-program = { workspace = true, default-features = false }
-test-case = { workspace = true }
-
 [lib]
 crate-type = ["lib"]
 name = "solana_stake_program"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
-
-[[bench]]
-name = "stake"
-harness = false
 
 [lints]
 workspace = true

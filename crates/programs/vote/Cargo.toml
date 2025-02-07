@@ -43,24 +43,6 @@ solana-transaction-context = { workspace = true, features = ["bincode"] }
 solana-vote-interface = { workspace = true, features = ["bincode"] }
 thiserror = { workspace = true }
 
-[dev-dependencies]
-assert_matches = { workspace = true }
-criterion = { workspace = true }
-solana-account = { workspace = true }
-solana-clock = { workspace = true }
-solana-instruction = { workspace = true }
-solana-logger = { workspace = true }
-solana-pubkey = { workspace = true, features = ["rand"] }
-solana-rent = { workspace = true }
-solana-sdk = { workspace = true }
-solana-sdk-ids = { workspace = true }
-solana-sha256-hasher = { workspace = true }
-test-case = { workspace = true }
-
-[[bench]]
-name = "vote_instructions"
-harness = false
-
 [lib]
 crate-type = ["lib"]
 name = "solana_vote_program"

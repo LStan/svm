@@ -21,10 +21,6 @@ solana-frozen-abi-macro = { workspace = true, optional = true, features = [
 solana-pubkey = { workspace = true, default-features = false }
 solana-sdk-ids = { workspace = true }
 
-[dev-dependencies]
-solana-message = { workspace = true }
-solana-sysvar = { workspace = true }
-
 [features]
 frozen-abi = ["dep:solana-frozen-abi", "dep:solana-frozen-abi-macro"]
 

@@ -24,9 +24,6 @@ solana-system-interface = { workspace = true, optional = true, features = [
     "bincode",
 ] }
 
-[dev-dependencies]
-solana-feature-gate-interface = { path = ".", features = ["dev-context-only-utils"] }
-
 [features]
 bincode = [
     "dep:bincode",

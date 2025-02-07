@@ -18,15 +18,6 @@ solana-instruction = { workspace = true, features = ["std"] }
 solana-precompile-error = { workspace = true }
 solana-sdk-ids = { workspace = true }
 
-[dev-dependencies]
-hex = { workspace = true }
-rand0-7 = { workspace = true }
-solana-hash = { workspace = true }
-solana-keypair = { workspace = true }
-solana-logger = { workspace = true }
-solana-sdk = { path = "../sdk" }
-solana-signer = { workspace = true }
-
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 

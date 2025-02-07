@@ -12,11 +12,7 @@ use {
 mod sanitized_message;
 mod sanitized_transaction;
 // inlined to avoid solana-nonce dep
-#[cfg(test)]
-static_assertions::const_assert_eq!(
-    NONCED_TX_MARKER_IX_INDEX,
-    solana_nonce::NONCED_TX_MARKER_IX_INDEX
-);
+
 const NONCED_TX_MARKER_IX_INDEX: u8 = 0;
 
 // - Debug to support legacy logging

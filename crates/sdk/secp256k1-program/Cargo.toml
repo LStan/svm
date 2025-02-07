@@ -21,22 +21,6 @@ solana-instruction = { workspace = true, features = ["std"], optional = true }
 solana-precompile-error = { workspace = true, optional = true }
 solana-sdk-ids = { workspace = true, optional = true }
 
-[dev-dependencies]
-anyhow = { workspace = true }
-hex = { workspace = true }
-rand0-7 = { workspace = true }
-solana-account-info = { workspace = true }
-solana-hash = { workspace = true }
-solana-instructions-sysvar = { workspace = true }
-solana-keccak-hasher = { workspace = true }
-solana-keypair = { workspace = true }
-solana-logger = { workspace = true }
-solana-msg = { workspace = true }
-solana-program-error = { workspace = true }
-solana-sdk = { path = "../sdk" }
-solana-secp256k1-program = { path = ".", features = ["dev-context-only-utils"] }
-solana-signer = { workspace = true }
-
 [features]
 bincode = [
     "dep:bincode",

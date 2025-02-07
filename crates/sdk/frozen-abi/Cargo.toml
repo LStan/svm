@@ -24,12 +24,6 @@ thiserror = { workspace = true }
 im = { workspace = true, features = ["rayon", "serde"] }
 memmap2 = { workspace = true }
 
-[target.'cfg(not(target_os = "solana"))'.dev-dependencies]
-bitflags = { workspace = true, features = ["serde"] }
-serde_bytes = { workspace = true }
-solana-logger = { workspace = true }
-serde_with = { workspace = true, features = ["macros"] }
-
 [features]
 default = []
 # activate the frozen-abi feature when we actually want to do frozen-abi testing,

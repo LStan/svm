@@ -19,13 +19,6 @@ solana-pubkey = { workspace = true }
 solana-define-syscall = { workspace = true }
 solana-stable-layout = { workspace = true }
 
-[dev-dependencies]
-solana-program-entrypoint = { workspace = true }
-solana-pubkey = { workspace = true, features = ["curve25519"] }
-solana-sdk-ids = { workspace = true }
-solana-system-interface = { workspace = true, features = ["bincode"] }
-static_assertions = { workspace = true }
-
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 

@@ -27,11 +27,6 @@ solana-stake-interface = { workspace = true }
 solana-system-interface = { workspace = true }
 solana-transaction-context = { workspace = true }
 
-[dev-dependencies]
-solana-keypair = { workspace = true }
-solana-logger = { workspace = true }
-solana-signer = { workspace = true }
-
 [lib]
 crate-type = ["lib"]
 name = "solana_config_program"

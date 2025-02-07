@@ -36,15 +36,6 @@ solana-system-interface = { workspace = true, features = ["bincode"], optional =
 [target.'cfg(target_os = "solana")'.dependencies]
 solana-serialize-utils = { workspace = true }
 
-[dev-dependencies]
-arbitrary = { workspace = true, features = ["derive"] }
-itertools = { workspace = true }
-rand = { workspace = true }
-solana-epoch-schedule = { workspace = true }
-solana-logger = { workspace = true }
-solana-pubkey = { workspace = true, features = ["dev-context-only-utils"] }
-solana-vote-interface = { path = ".", features = ["dev-context-only-utils"] }
-
 [features]
 bincode = [
     "dep:bincode",

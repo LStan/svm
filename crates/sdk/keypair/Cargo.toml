@@ -24,11 +24,6 @@ solana-signer = { workspace = true }
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { workspace = true }
 
-[dev-dependencies]
-serde_json = { workspace = true }
-static_assertions = { workspace = true }
-tiny-bip39 = { workspace = true }
-
 [features]
 seed-derivable = ["dep:solana-derivation-path", "dep:solana-seed-derivable", "dep:ed25519-dalek-bip32"]
 
