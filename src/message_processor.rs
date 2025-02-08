@@ -1,11 +1,9 @@
 use {
     solana_account::WritableAccount,
     solana_instructions_sysvar as instructions,
-    solana_measure::measure_us,
     solana_precompiles::get_precompile,
     solana_program_runtime::invoke_context::InvokeContext,
     solana_svm_transaction::svm_message::SVMMessage,
-    solana_timings::{ExecuteDetailsTimings, ExecuteTimings},
     solana_transaction_context::{IndexOfAccount, InstructionAccount},
     solana_transaction_error::TransactionError,
 };
@@ -19,7 +17,6 @@ pub(crate) fn process_message(
     message: &impl SVMMessage,
     program_indices: &[Vec<IndexOfAccount>],
     invoke_context: &mut InvokeContext,
-    execute_timings: &mut ExecuteTimings,
     accumulated_consumed_units: &mut u64,
 ) -> Result<(), TransactionError> {
     debug_assert_eq!(program_indices.len(), message.num_instructions());
@@ -68,7 +65,7 @@ pub(crate) fn process_message(
         }
 
         let mut compute_units_consumed = 0;
-        let (result, process_instruction_us) = measure_us!({
+        let result = {
             if let Some(precompile) = get_precompile(program_id, |feature_id| {
                 invoke_context.get_feature_set().is_active(feature_id)
             }) {
@@ -85,27 +82,12 @@ pub(crate) fn process_message(
                     &instruction_accounts,
                     program_indices,
                     &mut compute_units_consumed,
-                    execute_timings,
                 )
             }
-        });
+        };
 
         *accumulated_consumed_units =
             accumulated_consumed_units.saturating_add(compute_units_consumed);
-        execute_timings.details.accumulate_program(
-            program_id,
-            process_instruction_us,
-            compute_units_consumed,
-            result.is_err(),
-        );
-        invoke_context.timings = {
-            execute_timings.details.accumulate(&invoke_context.timings);
-            ExecuteDetailsTimings::default()
-        };
-        execute_timings
-            .execute_accessories
-            .process_instructions
-            .total_us += process_instruction_us;
 
         result.map_err(|err| TransactionError::InstructionError(instruction_index as u8, err))?;
     }

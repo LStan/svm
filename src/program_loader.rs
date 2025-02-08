@@ -7,13 +7,12 @@ use {
     solana_instruction::error::InstructionError,
     solana_program::bpf_loader_upgradeable::{self, UpgradeableLoaderState},
     solana_program_runtime::loaded_programs::{
-        LoadProgramMetrics, ProgramCacheEntry, ProgramCacheEntryOwner, ProgramCacheEntryType,
+        ProgramCacheEntry, ProgramCacheEntryOwner, ProgramCacheEntryType,
         ProgramRuntimeEnvironment, ProgramRuntimeEnvironments, DELAY_VISIBILITY_SLOT_OFFSET,
     },
     solana_pubkey::Pubkey,
     solana_sdk::loader_v4::{self, LoaderV4State, LoaderV4Status},
     solana_sdk_ids::{bpf_loader, bpf_loader_deprecated},
-    solana_timings::ExecuteTimings,
     solana_transaction_error::{TransactionError, TransactionResult},
     solana_type_overrides::sync::Arc,
 };
@@ -28,7 +27,6 @@ pub(crate) enum ProgramAccountLoadResult {
 }
 
 pub(crate) fn load_program_from_bytes(
-    load_program_metrics: &mut LoadProgramMetrics,
     programdata: &[u8],
     loader_key: &Pubkey,
     account_size: usize,
@@ -46,7 +44,6 @@ pub(crate) fn load_program_from_bytes(
                 deployment_slot.saturating_add(DELAY_VISIBILITY_SLOT_OFFSET),
                 programdata,
                 account_size,
-                load_program_metrics,
             )
         }
     } else {
@@ -57,7 +54,6 @@ pub(crate) fn load_program_from_bytes(
             deployment_slot.saturating_add(DELAY_VISIBILITY_SLOT_OFFSET),
             programdata,
             account_size,
-            load_program_metrics,
         )
     }
 }
@@ -124,21 +120,14 @@ pub(crate) fn load_program_with_pubkey<CB: TransactionProcessingCallback>(
     environments: &ProgramRuntimeEnvironments,
     pubkey: &Pubkey,
     slot: Slot,
-    execute_timings: &mut ExecuteTimings,
     reload: bool,
 ) -> Option<Arc<ProgramCacheEntry>> {
-    let mut load_program_metrics = LoadProgramMetrics {
-        program_id: pubkey.to_string(),
-        ..LoadProgramMetrics::default()
-    };
-
     let loaded_program = match load_program_accounts(callbacks, pubkey)? {
         ProgramAccountLoadResult::InvalidAccountData(owner) => Ok(
             ProgramCacheEntry::new_tombstone(slot, owner, ProgramCacheEntryType::Closed),
         ),
 
         ProgramAccountLoadResult::ProgramOfLoaderV1(program_account) => load_program_from_bytes(
-            &mut load_program_metrics,
             program_account.data(),
             program_account.owner(),
             program_account.data().len(),
@@ -149,7 +138,6 @@ pub(crate) fn load_program_with_pubkey<CB: TransactionProcessingCallback>(
         .map_err(|_| (0, ProgramCacheEntryOwner::LoaderV1)),
 
         ProgramAccountLoadResult::ProgramOfLoaderV2(program_account) => load_program_from_bytes(
-            &mut load_program_metrics,
             program_account.data(),
             program_account.owner(),
             program_account.data().len(),
@@ -166,7 +154,6 @@ pub(crate) fn load_program_with_pubkey<CB: TransactionProcessingCallback>(
                 .ok_or(Box::new(InstructionError::InvalidAccountData).into())
                 .and_then(|programdata| {
                     load_program_from_bytes(
-                        &mut load_program_metrics,
                         programdata,
                         program_account.owner(),
                         program_account
@@ -187,7 +174,6 @@ pub(crate) fn load_program_with_pubkey<CB: TransactionProcessingCallback>(
             .ok_or(Box::new(InstructionError::InvalidAccountData).into())
             .and_then(|elf_bytes| {
                 load_program_from_bytes(
-                    &mut load_program_metrics,
                     elf_bytes,
                     &loader_v4::id(),
                     program_account.data().len(),
@@ -207,7 +193,6 @@ pub(crate) fn load_program_with_pubkey<CB: TransactionProcessingCallback>(
         )
     });
 
-    load_program_metrics.submit_datapoint(&mut execute_timings.details);
     loaded_program.update_access_slot(slot);
     Some(Arc::new(loaded_program))
 }

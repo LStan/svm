@@ -57,7 +57,6 @@ use {
     solana_sha256_hasher::Hasher,
     solana_sysvar::Sysvar,
     solana_sysvar_id::SysvarId,
-    solana_timings::ExecuteTimings,
     solana_transaction_context::{IndexOfAccount, InstructionAccount},
     solana_type_overrides::sync::Arc,
     std::{

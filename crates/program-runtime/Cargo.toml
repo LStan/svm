@@ -34,8 +34,6 @@ solana-hash = { workspace = true }
 solana-instruction = { workspace = true }
 solana-last-restart-slot = { workspace = true }
 solana-log-collector = { workspace = true }
-solana-measure = { workspace = true }
-solana-metrics = { workspace = true, optional = true }
 solana-precompiles = { workspace = true }
 solana-pubkey = { workspace = true }
 solana-rent = { workspace = true }
@@ -45,7 +43,6 @@ solana-slot-hashes = { workspace = true }
 solana-stable-layout = { workspace = true }
 solana-sysvar = { workspace = true }
 solana-sysvar-id = { workspace = true }
-solana-timings = { workspace = true }
 solana-transaction-context = { workspace = true }
 solana-type-overrides = { workspace = true }
 thiserror = { workspace = true }
@@ -58,13 +55,12 @@ name = "solana_program_runtime"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [features]
-dummy-for-ci-check = ["metrics"]
 frozen-abi = [
     "dep:solana-frozen-abi",
     "dep:solana-frozen-abi-macro",
     "solana-compute-budget/frozen-abi",
 ]
-metrics = ["dep:solana-metrics"]
+metrics = []
 shuttle-test = [
     "solana-type-overrides/shuttle-test",
     "solana-sbpf/shuttle-test",

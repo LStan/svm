@@ -19,7 +19,6 @@ solana-instruction = { workspace = true }
 solana-loader-v3-interface = { workspace = true }
 solana-loader-v4-interface = { workspace = true, features = ["serde"] }
 solana-log-collector = { workspace = true }
-solana-measure = { workspace = true }
 solana-packet = { workspace = true }
 solana-program-runtime = { workspace = true }
 solana-pubkey = { workspace = true }

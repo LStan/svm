@@ -199,18 +199,6 @@ impl TransactionContext {
         self.remove_accounts_executable_flag_checks = enabled;
     }
 
-    /// Used in mock_process_instruction
-    #[cfg(not(target_os = "solana"))]
-    pub fn deconstruct_without_keys(self) -> Result<Vec<AccountSharedData>, InstructionError> {
-        if !self.instruction_stack.is_empty() {
-            return Err(InstructionError::CallDepth);
-        }
-
-        Ok(Rc::try_unwrap(self.accounts)
-            .expect("transaction_context.accounts has unexpected outstanding refs")
-            .into_accounts())
-    }
-
     #[cfg(not(target_os = "solana"))]
     pub fn accounts(&self) -> &Rc<TransactionAccounts> {
         &self.accounts

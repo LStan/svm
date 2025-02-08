@@ -144,7 +144,8 @@ const NON_MIGRATING_BUILTINS_COSTS: &[(Pubkey, BuiltinCost)] = &[
     (
         vote::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_vote_program::vote_processor::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_vote_program::vote_processor::DEFAULT_COMPUTE_UNITS,
+            native_cost: 2_100,
         }),
     ),
     (

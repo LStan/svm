@@ -11,7 +11,6 @@ use {
         DEPLOYMENT_COOLDOWN_IN_SLOTS,
     },
     solana_log_collector::{ic_logger_msg, LogCollector},
-    solana_measure::measure::Measure,
     solana_program_runtime::{
         invoke_context::InvokeContext,
         loaded_programs::{ProgramCacheEntry, ProgramCacheEntryOwner, ProgramCacheEntryType},
@@ -516,7 +515,6 @@ fn process_instruction_inner(
         .map_err(|err| Box::new(err) as Box<dyn std::error::Error>)
     } else {
         let program = instruction_context.try_borrow_last_program_account(transaction_context)?;
-        let mut get_or_create_executor_time = Measure::start("get_or_create_executor_time");
         let loaded_program = invoke_context
             .program_cache_for_tx_batch
             .find(program.get_key())
@@ -524,8 +522,6 @@ fn process_instruction_inner(
                 ic_logger_msg!(log_collector, "Program is not cached");
                 InstructionError::UnsupportedProgramId
             })?;
-        get_or_create_executor_time.stop();
-        invoke_context.timings.get_or_create_executor_us += get_or_create_executor_time.as_us();
         drop(program);
         loaded_program
             .ix_usage_counter

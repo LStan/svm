@@ -1,24 +1,20 @@
 use {
     crate::{
         loaded_programs::{
-            ProgramCacheEntry, ProgramCacheEntryType, ProgramCacheForTxBatch,
-            ProgramRuntimeEnvironments,
+            ProgramCacheEntryType, ProgramCacheForTxBatch, ProgramRuntimeEnvironments,
         },
         stable_log,
         sysvar_cache::SysvarCache,
     },
-    solana_account::{create_account_shared_data_for_test, AccountSharedData},
     solana_clock::Slot,
     solana_compute_budget::compute_budget::ComputeBudget,
-    solana_epoch_schedule::EpochSchedule,
     solana_feature_set::{
         lift_cpi_caller_restriction, move_precompile_verification_to_svm,
         remove_accounts_executable_flag_checks, FeatureSet,
     },
     solana_hash::Hash,
-    solana_instruction::{error::InstructionError, AccountMeta},
+    solana_instruction::error::InstructionError,
     solana_log_collector::{ic_msg, LogCollector},
-    solana_measure::measure::Measure,
     solana_precompiles::Precompile,
     solana_pubkey::Pubkey,
     solana_sbpf::{
@@ -28,12 +24,9 @@ use {
         program::{BuiltinFunction, SBPFVersion},
         vm::{Config, ContextObject, EbpfVm},
     },
-    solana_sdk_ids::{bpf_loader_deprecated, native_loader, sysvar},
+    solana_sdk_ids::{bpf_loader_deprecated, native_loader},
     solana_stable_layout::stable_instruction::StableInstruction,
-    solana_timings::{ExecuteDetailsTimings, ExecuteTimings},
-    solana_transaction_context::{
-        IndexOfAccount, InstructionAccount, TransactionAccount, TransactionContext,
-    },
+    solana_transaction_context::{IndexOfAccount, InstructionAccount, TransactionContext},
     solana_type_overrides::sync::{atomic::Ordering, Arc},
     std::{
         alloc::Layout,
@@ -199,9 +192,6 @@ pub struct InvokeContext<'a> {
     /// the designated compute budget during program execution.
     compute_meter: RefCell<u64>,
     log_collector: Option<Rc<RefCell<LogCollector>>>,
-    /// Latest measurement not yet accumulated in [ExecuteDetailsTimings::execute_us]
-    pub execute_time: Option<Measure>,
-    pub timings: ExecuteDetailsTimings,
     pub syscall_context: Vec<Option<SyscallContext>>,
     traces: Vec<Vec<[u64; 12]>>,
 }
@@ -222,8 +212,6 @@ impl<'a> InvokeContext<'a> {
             log_collector,
             compute_budget,
             compute_meter: RefCell::new(compute_budget.compute_unit_limit),
-            execute_time: None,
-            timings: ExecuteDetailsTimings::default(),
             syscall_context: Vec::new(),
             traces: Vec::new(),
         }
@@ -315,7 +303,6 @@ impl<'a> InvokeContext<'a> {
             &instruction_accounts,
             &program_indices,
             &mut compute_units_consumed,
-            &mut ExecuteTimings::default(),
         )?;
         Ok(())
     }
@@ -465,14 +452,13 @@ impl<'a> InvokeContext<'a> {
         instruction_accounts: &[InstructionAccount],
         program_indices: &[IndexOfAccount],
         compute_units_consumed: &mut u64,
-        timings: &mut ExecuteTimings,
     ) -> Result<(), InstructionError> {
         *compute_units_consumed = 0;
         self.transaction_context
             .get_next_instruction_context()?
             .configure(program_indices, instruction_accounts, instruction_data);
         self.push()?;
-        self.process_executable_chain(compute_units_consumed, timings)
+        self.process_executable_chain(compute_units_consumed)
             // MUST pop if and only if `push` succeeded, independent of `result`.
             // Thus, the `.and()` instead of an `.and_then()`.
             .and(self.pop())
@@ -510,10 +496,8 @@ impl<'a> InvokeContext<'a> {
     fn process_executable_chain(
         &mut self,
         compute_units_consumed: &mut u64,
-        timings: &mut ExecuteTimings,
     ) -> Result<(), InstructionError> {
         let instruction_context = self.transaction_context.get_current_instruction_context()?;
-        let process_executable_chain_time = Measure::start("process_executable_chain_time");
 
         let builtin_id = {
             debug_assert!(instruction_context.get_number_of_program_accounts() <= 1);
@@ -596,10 +580,6 @@ impl<'a> InvokeContext<'a> {
             return Err(InstructionError::BuiltinProgramsMustConsumeComputeUnits);
         }
 
-        timings
-            .execute_accessories
-            .process_instructions
-            .process_executable_chain_us += process_executable_chain_time.end_as_us();
         result
     }
 
@@ -769,81 +749,4 @@ macro_rules! with_mock_invoke_context {
             compute_budget,
         );
     };
-}
-
-pub fn mock_process_instruction<F: FnMut(&mut InvokeContext), G: FnMut(&mut InvokeContext)>(
-    loader_id: &Pubkey,
-    mut program_indices: Vec<IndexOfAccount>,
-    instruction_data: &[u8],
-    mut transaction_accounts: Vec<TransactionAccount>,
-    instruction_account_metas: Vec<AccountMeta>,
-    expected_result: Result<(), InstructionError>,
-    builtin_function: BuiltinFunctionWithContext,
-    mut pre_adjustments: F,
-    mut post_adjustments: G,
-) -> Vec<AccountSharedData> {
-    let mut instruction_accounts: Vec<InstructionAccount> =
-        Vec::with_capacity(instruction_account_metas.len());
-    for (instruction_account_index, account_meta) in instruction_account_metas.iter().enumerate() {
-        let index_in_transaction = transaction_accounts
-            .iter()
-            .position(|(key, _account)| *key == account_meta.pubkey)
-            .unwrap_or(transaction_accounts.len())
-            as IndexOfAccount;
-        let index_in_callee = instruction_accounts
-            .get(0..instruction_account_index)
-            .unwrap()
-            .iter()
-            .position(|instruction_account| {
-                instruction_account.index_in_transaction == index_in_transaction
-            })
-            .unwrap_or(instruction_account_index) as IndexOfAccount;
-        instruction_accounts.push(InstructionAccount {
-            index_in_transaction,
-            index_in_caller: index_in_transaction,
-            index_in_callee,
-            is_signer: account_meta.is_signer,
-            is_writable: account_meta.is_writable,
-        });
-    }
-    if program_indices.is_empty() {
-        program_indices.insert(0, transaction_accounts.len() as IndexOfAccount);
-        let processor_account = AccountSharedData::new(0, 0, &native_loader::id());
-        transaction_accounts.push((*loader_id, processor_account));
-    }
-    let pop_epoch_schedule_account = if !transaction_accounts
-        .iter()
-        .any(|(key, _)| *key == sysvar::epoch_schedule::id())
-    {
-        transaction_accounts.push((
-            sysvar::epoch_schedule::id(),
-            create_account_shared_data_for_test(&EpochSchedule::default()),
-        ));
-        true
-    } else {
-        false
-    };
-    with_mock_invoke_context!(invoke_context, transaction_context, transaction_accounts);
-    let mut program_cache_for_tx_batch = ProgramCacheForTxBatch::default();
-    program_cache_for_tx_batch.replenish(
-        *loader_id,
-        Arc::new(ProgramCacheEntry::new_builtin(0, 0, builtin_function)),
-    );
-    invoke_context.program_cache_for_tx_batch = &mut program_cache_for_tx_batch;
-    pre_adjustments(&mut invoke_context);
-    let result = invoke_context.process_instruction(
-        instruction_data,
-        &instruction_accounts,
-        &program_indices,
-        &mut 0,
-        &mut ExecuteTimings::default(),
-    );
-    assert_eq!(result, expected_result);
-    post_adjustments(&mut invoke_context);
-    let mut transaction_accounts = transaction_context.deconstruct_without_keys().unwrap();
-    if pop_epoch_schedule_account {
-        transaction_accounts.pop();
-    }
-    transaction_accounts.pop();
-    transaction_accounts
 }

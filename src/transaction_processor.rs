@@ -34,7 +34,6 @@ use {
     solana_hash::Hash,
     solana_instruction::TRANSACTION_LEVEL_STACK_HEIGHT,
     solana_log_collector::LogCollector,
-    solana_measure::{measure::Measure, measure_us},
     solana_message::compiled_instruction::CompiledInstruction,
     solana_nonce::{
         state::{DurableNonce, State as NonceState},
@@ -57,7 +56,6 @@ use {
     solana_sdk_ids::{native_loader, system_program},
     solana_svm_rent_collector::svm_rent_collector::SVMRentCollector,
     solana_svm_transaction::{svm_message::SVMMessage, svm_transaction::SVMTransaction},
-    solana_timings::{ExecuteTimingType, ExecuteTimings},
     solana_transaction_context::{ExecutionRecord, TransactionContext},
     solana_transaction_error::{TransactionError, TransactionResult},
     solana_type_overrides::sync::{atomic::Ordering, Arc, RwLock, RwLockReadGuard},
@@ -77,8 +75,6 @@ pub type TransactionLogMessages = Vec<String>;
 pub struct LoadAndExecuteSanitizedTransactionsOutput {
     /// Error metrics for transactions that were processed.
     pub error_metrics: TransactionErrorMetrics,
-    /// Timings for transaction batch execution.
-    pub execute_timings: ExecuteTimings,
     /// Vector of results indicating whether a transaction was processed or
     /// could not be processed. Note processed transactions can still have a
     /// failure result meaning that the transaction will be rolled back.
@@ -340,11 +336,10 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
 
         // Initialize metrics.
         let mut error_metrics = TransactionErrorMetrics::default();
-        let mut execute_timings = ExecuteTimings::default();
         let mut processing_results = Vec::with_capacity(sanitized_txs.len());
 
         let native_loader = native_loader::id();
-        let (program_accounts_map, filter_executable_us) = measure_us!({
+        let program_accounts_map = {
             let mut program_accounts_map = Self::filter_executable_program_accounts(
                 callbacks,
                 sanitized_txs,
@@ -355,13 +350,12 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
                 program_accounts_map.insert(*builtin_program, (&native_loader, 0));
             }
             program_accounts_map
-        });
+        };
 
-        let (mut program_cache_for_tx_batch, program_cache_us) = measure_us!({
+        let mut program_cache_for_tx_batch = {
             let program_cache_for_tx_batch = self.replenish_program_cache(
                 callbacks,
                 &program_accounts_map,
-                &mut execute_timings,
                 config.check_program_modification_slot,
                 config.limit_to_load_programs,
             );
@@ -369,7 +363,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
             if program_cache_for_tx_batch.hit_max_limit {
                 return LoadAndExecuteSanitizedTransactionsOutput {
                     error_metrics,
-                    execute_timings,
                     processing_results: (0..sanitized_txs.len())
                         .map(|_| Err(TransactionError::ProgramCacheHitMaxLimit))
                         .collect(),
@@ -377,7 +370,7 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
             }
 
             program_cache_for_tx_batch
-        });
+        };
 
         // Determine a capacity for the internal account cache. This
         // over-allocates but avoids ever reallocating, and spares us from
@@ -396,31 +389,27 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
             .feature_set
             .is_active(&enable_transaction_loading_failure_fees::id());
 
-        let (mut validate_fees_us, mut load_us, mut execution_us): (u64, u64, u64) = (0, 0, 0);
-
         // Validate, execute, and collect results from each transaction in order.
         // With SIMD83, transactions must be executed in order, because transactions
         // in the same batch may modify the same accounts. Transaction order is
         // preserved within entries written to the ledger.
         for (tx, check_result) in sanitized_txs.iter().zip(check_results) {
-            let (validate_result, single_validate_fees_us) =
-                measure_us!(check_result.and_then(|tx_details| {
-                    Self::validate_transaction_nonce_and_fee_payer(
-                        &mut account_loader,
-                        tx,
-                        tx_details,
-                        &environment.blockhash,
-                        environment.fee_lamports_per_signature,
-                        environment
-                            .rent_collector
-                            .unwrap_or(&RentCollector::default()),
-                        &mut error_metrics,
-                        callbacks,
-                    )
-                }));
-            validate_fees_us = validate_fees_us.saturating_add(single_validate_fees_us);
+            let validate_result = check_result.and_then(|tx_details| {
+                Self::validate_transaction_nonce_and_fee_payer(
+                    &mut account_loader,
+                    tx,
+                    tx_details,
+                    &environment.blockhash,
+                    environment.fee_lamports_per_signature,
+                    environment
+                        .rent_collector
+                        .unwrap_or(&RentCollector::default()),
+                    &mut error_metrics,
+                    callbacks,
+                )
+            });
 
-            let (load_result, single_load_us) = measure_us!(load_transaction(
+            let load_result = load_transaction(
                 &mut account_loader,
                 tx,
                 validate_result,
@@ -428,10 +417,9 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
                 environment
                     .rent_collector
                     .unwrap_or(&RentCollector::default()),
-            ));
-            load_us = load_us.saturating_add(single_load_us);
+            );
 
-            let (processing_result, single_execution_us) = measure_us!(match load_result {
+            let processing_result = match load_result {
                 TransactionLoadResult::NotLoaded(err) => Err(err),
                 TransactionLoadResult::FeesOnly(fees_only_tx) => {
                     if enable_transaction_loading_failure_fees {
@@ -449,7 +437,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
                         callbacks,
                         tx,
                         loaded_transaction,
-                        &mut execute_timings,
                         &mut error_metrics,
                         &mut program_cache_for_tx_batch,
                         environment,
@@ -466,8 +453,7 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
 
                     Ok(ProcessedTransaction::Executed(Box::new(executed_tx)))
                 }
-            });
-            execution_us = execution_us.saturating_add(single_execution_us);
+            };
 
             processing_results.push(processing_result);
         }
@@ -487,25 +473,8 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
                 );
         }
 
-        debug!(
-            "load: {}us execute: {}us txs_len={}",
-            load_us,
-            execution_us,
-            sanitized_txs.len(),
-        );
-
-        execute_timings
-            .saturating_add_in_place(ExecuteTimingType::ValidateFeesUs, validate_fees_us);
-        execute_timings
-            .saturating_add_in_place(ExecuteTimingType::FilterExecutableUs, filter_executable_us);
-        execute_timings
-            .saturating_add_in_place(ExecuteTimingType::ProgramCacheUs, program_cache_us);
-        execute_timings.saturating_add_in_place(ExecuteTimingType::LoadUs, load_us);
-        execute_timings.saturating_add_in_place(ExecuteTimingType::ExecuteUs, execution_us);
-
         LoadAndExecuteSanitizedTransactionsOutput {
             error_metrics,
-            execute_timings,
             processing_results,
         }
     }
@@ -729,7 +698,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
         &self,
         callback: &CB,
         program_accounts_map: &HashMap<Pubkey, (&Pubkey, u64)>,
-        execute_timings: &mut ExecuteTimings,
         check_program_modification_slot: bool,
         limit_to_load_programs: bool,
     ) -> ProgramCacheForTxBatch {
@@ -777,7 +745,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
                         &program_cache.get_environments_for_epoch(self.epoch),
                         &key,
                         self.slot,
-                        execute_timings,
                         false,
                     )
                     .expect("called load_program_with_pubkey() with nonexistent account");
@@ -850,7 +817,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
                     &environments_for_epoch,
                     &key,
                     self.slot,
-                    &mut ExecuteTimings::default(),
                     false,
                 ) {
                     recompiled.tx_usage_counter.fetch_add(
@@ -915,7 +881,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
         callback: &CB,
         tx: &impl SVMTransaction,
         mut loaded_transaction: LoadedTransaction,
-        execute_timings: &mut ExecuteTimings,
         error_metrics: &mut TransactionErrorMetrics,
         program_cache_for_tx_batch: &mut ProgramCacheForTxBatch,
         environment: &TransactionProcessingEnvironment,
@@ -996,19 +961,14 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
             compute_budget,
         );
 
-        let mut process_message_time = Measure::start("process_message_time");
         let process_result = process_message(
             tx,
             &loaded_transaction.program_indices,
             &mut invoke_context,
-            execute_timings,
             &mut executed_units,
         );
-        process_message_time.stop();
 
         drop(invoke_context);
-
-        execute_timings.execute_accessories.process_message_us += process_message_time.as_us();
 
         let mut status = process_result
             .and_then(|info| {
@@ -1056,7 +1016,7 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
         let ExecutionRecord {
             accounts,
             return_data,
-            touched_account_count,
+            touched_account_count: _,
             accounts_resize_delta: accounts_data_len_delta,
         } = transaction_context.into();
 
@@ -1070,8 +1030,6 @@ impl<FG: ForkGraph> TransactionBatchProcessor<FG> {
         let status = status.map(|_| ());
 
         loaded_transaction.accounts = accounts;
-        execute_timings.details.total_account_count += loaded_transaction.accounts.len() as u64;
-        execute_timings.details.changed_account_count += touched_account_count;
 
         let return_data = if config.recording_config.enable_return_data_recording
             && !return_data.data.is_empty()

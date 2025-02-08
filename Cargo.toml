@@ -12,13 +12,10 @@ members = [
     "crates/compute-budget-instruction",
     "crates/curves/curve25519",
     "crates/log-collector",
-    "crates/measure",
-    "crates/metrics",
     "crates/poseidon",
     "crates/program-runtime",
     "crates/svm-rent-collector",
     "crates/svm-transaction",
-    "crates/timings",
     "crates/type-overrides",
     "crates/programs/address-lookup-table",
     "crates/programs/bpf_loader",
@@ -27,7 +24,6 @@ members = [
     "crates/programs/loader-v4",
     "crates/programs/stake",
     "crates/programs/system",
-    "crates/programs/vote",
     "crates/sdk/account",
     "crates/sdk/account-info",
     "crates/sdk/address-lookup-table-interface",
@@ -251,9 +247,7 @@ solana-loader-v4-interface = { path = "crates/sdk/loader-v4-interface", version 
 solana-loader-v4-program = { path = "crates/programs/loader-v4", version = "=2.2.0" }
 solana-log-collector = { path = "crates/log-collector", version = "=2.2.0" }
 solana-logger = { path = "crates/sdk/logger", version = "=2.2.0" }
-solana-measure = { path = "crates/measure", version = "=2.2.0" }
 solana-message = { path = "crates/sdk/message", version = "=2.2.0" }
-solana-metrics = { path = "crates/metrics", version = "=2.2.0" }
 solana-msg = { path = "crates/sdk/msg", version = "=2.2.0" }
 solana-native-token = { path = "crates/sdk/native-token", version = "=2.2.0" }
 solana-nonce = { path = "crates/sdk/nonce", version = "=2.2.0" }
@@ -310,14 +304,12 @@ solana-system-transaction = { path = "crates/sdk/system-transaction", version = 
 solana-sysvar = { path = "crates/sdk/sysvar", version = "=2.2.0" }
 solana-sysvar-id = { path = "crates/sdk/sysvar-id", version = "=2.2.0" }
 solana-time-utils = { path = "crates/sdk/time-utils", version = "=2.2.0" }
-solana-timings = { path = "crates/timings", version = "=2.2.0" }
 solana-transaction = { path = "crates/sdk/transaction", version = "=2.2.0" }
 solana-transaction-context = { path = "crates/sdk/transaction-context", version = "=2.2.0" }
 solana-transaction-error = { path = "crates/sdk/transaction-error", version = "=2.2.0" }
 solana-type-overrides = { path = "crates/type-overrides", version = "=2.2.0" }
 solana-validator-exit = { path = "crates/sdk/validator-exit", version = "=2.2.0" }
 solana-vote-interface = { path = "crates/sdk/vote-interface", version = "=2.2.0" }
-solana-vote-program = { path = "crates/programs/vote", version = "=2.2.0", default-features = false }
 subtle = "2.6.1"
 syn = "2.0"
 thiserror = "2.0.11"
@@ -361,7 +353,6 @@ solana-instruction = { workspace = true, features = ["std"] }
 solana-instructions-sysvar = { workspace = true }
 solana-loader-v4-program = { workspace = true }
 solana-log-collector = { workspace = true }
-solana-measure = { workspace = true }
 solana-message = { workspace = true }
 solana-nonce = { workspace = true }
 solana-nonce-account = { workspace = true }
@@ -375,7 +366,6 @@ solana-sdk = { workspace = true }
 solana-sdk-ids = { workspace = true }
 solana-svm-rent-collector = { workspace = true }
 solana-svm-transaction = { workspace = true }
-solana-timings = { workspace = true }
 solana-transaction-context = { workspace = true }
 solana-transaction-error = { workspace = true }
 solana-type-overrides = { workspace = true }

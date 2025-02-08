@@ -740,14 +740,6 @@ pub fn create_account_shared_data_with_fields<S: Sysvar>(
 }
 
 #[cfg(feature = "bincode")]
-pub fn create_account_shared_data_for_test<S: Sysvar>(sysvar: &S) -> AccountSharedData {
-    AccountSharedData::from(create_account_with_fields(
-        sysvar,
-        DUMMY_INHERITABLE_ACCOUNT_FIELDS,
-    ))
-}
-
-#[cfg(feature = "bincode")]
 /// Create a `Sysvar` from an `Account`'s data.
 pub fn from_account<S: Sysvar, T: ReadableAccount>(account: &T) -> Option<S> {
     bincode::deserialize(account.data()).ok()
