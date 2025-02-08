@@ -17,13 +17,8 @@ members = [
     "crates/svm-rent-collector",
     "crates/svm-transaction",
     "crates/type-overrides",
-    "crates/programs/address-lookup-table",
     "crates/programs/bpf_loader",
-    "crates/programs/compute-budget",
-    "crates/programs/config",
     "crates/programs/loader-v4",
-    "crates/programs/stake",
-    "crates/programs/system",
     "crates/sdk/account",
     "crates/sdk/account-info",
     "crates/sdk/address-lookup-table-interface",
@@ -142,7 +137,6 @@ cfg_eval = "0.1.2"
 chrono = { version = "0.4.39", default-features = false }
 console_error_panic_hook = "0.1.7"
 console_log = "0.2.2"
-crossbeam-channel = "0.5.14"
 curve25519-dalek = { version = "4.1.3", features = ["digest", "rand_core"] }
 derivation-path = { version = "0.2.0", default-features = false }
 digest = "0.10.7"
@@ -197,7 +191,6 @@ siphasher = "0.3.11"
 solana-account = { path = "crates/sdk/account", version = "=2.2.0" }
 solana-account-info = { path = "crates/sdk/account-info", version = "=2.2.0" }
 solana-address-lookup-table-interface = { path = "crates/sdk/address-lookup-table-interface", version = "=2.2.0" }
-solana-address-lookup-table-program = { path = "crates/programs/address-lookup-table", version = "=2.2.0" }
 solana-atomic-u64 = { path = "crates/sdk/atomic-u64", version = "=2.2.0" }
 solana-big-mod-exp = { path = "crates/sdk/big-mod-exp", version = "=2.2.0" }
 solana-bincode = { path = "crates/sdk/bincode", version = "=2.2.0" }
@@ -213,8 +206,6 @@ solana-commitment-config = { path = "crates/sdk/commitment-config", version = "=
 solana-compute-budget = { path = "crates/compute-budget", version = "=2.2.0" }
 solana-compute-budget-instruction = { path = "crates/compute-budget-instruction", version = "=2.2.0" }
 solana-compute-budget-interface = { path = "crates/sdk/compute-budget-interface", version = "=2.2.0" }
-solana-compute-budget-program = { path = "crates/programs/compute-budget", version = "=2.2.0" }
-solana-config-program = { path = "crates/programs/config", version = "=2.2.0" }
 solana-cpi = { path = "crates/sdk/cpi", version = "=2.2.0" }
 solana-curve25519 = { path = "crates/curves/curve25519", version = "=2.2.0" }
 solana-decode-error = { path = "crates/sdk/decode-error", version = "=2.2.0" }
@@ -295,11 +286,9 @@ solana-slot-hashes = { path = "crates/sdk/slot-hashes", version = "=2.2.0" }
 solana-slot-history = { path = "crates/sdk/slot-history", version = "=2.2.0" }
 solana-stable-layout = { path = "crates/sdk/stable-layout", version = "=2.2.0" }
 solana-stake-interface = { version = "1.2.1" }
-solana-stake-program = { path = "crates/programs/stake", version = "=2.2.0" }
 solana-svm-rent-collector = { path = "crates/svm-rent-collector", version = "=2.2.0" }
 solana-svm-transaction = { path = "crates/svm-transaction", version = "=2.2.0" }
 solana-system-interface = "1.0"
-solana-system-program = { path = "crates/programs/system", version = "=2.2.0" }
 solana-system-transaction = { path = "crates/sdk/system-transaction", version = "=2.2.0" }
 solana-sysvar = { path = "crates/sdk/sysvar", version = "=2.2.0" }
 solana-sysvar-id = { path = "crates/sdk/sysvar-id", version = "=2.2.0" }
@@ -396,8 +385,6 @@ frozen-abi = [
 ]
 
 [patch.crates-io]
-# for details, see https://github.com/anza-xyz/crossbeam/commit/fd279d707025f0e60951e429bf778b4813d1b6bf
-crossbeam-epoch = { git = "https://github.com/anza-xyz/crossbeam", rev = "fd279d707025f0e60951e429bf778b4813d1b6bf" }
 
 # We include the following crates as our dependencies above from crates.io:
 #

@@ -116,7 +116,8 @@ const MIGRATING_BUILTINS_COSTS: &[(Pubkey, BuiltinCost)] = &[
     (
         stake::id(),
         BuiltinCost::Migrating(MigratingBuiltinCost {
-            native_cost: solana_stake_program::stake_instruction::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_stake_program::stake_instruction::DEFAULT_COMPUTE_UNITS,
+            native_cost: 750,
             core_bpf_migration_feature: feature_set::migrate_stake_program_to_core_bpf::id(),
             position: 0,
         }),
@@ -124,7 +125,8 @@ const MIGRATING_BUILTINS_COSTS: &[(Pubkey, BuiltinCost)] = &[
     (
         config::id(),
         BuiltinCost::Migrating(MigratingBuiltinCost {
-            native_cost: solana_config_program::config_processor::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_config_program::config_processor::DEFAULT_COMPUTE_UNITS,
+            native_cost: 450,
             core_bpf_migration_feature: feature_set::migrate_config_program_to_core_bpf::id(),
             position: 1,
         }),
@@ -132,7 +134,8 @@ const MIGRATING_BUILTINS_COSTS: &[(Pubkey, BuiltinCost)] = &[
     (
         address_lookup_table::id(),
         BuiltinCost::Migrating(MigratingBuiltinCost {
-            native_cost: solana_address_lookup_table_program::processor::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_address_lookup_table_program::processor::DEFAULT_COMPUTE_UNITS,
+            native_cost: 750,
             core_bpf_migration_feature:
                 feature_set::migrate_address_lookup_table_program_to_core_bpf::id(),
             position: 2,
@@ -151,37 +154,43 @@ const NON_MIGRATING_BUILTINS_COSTS: &[(Pubkey, BuiltinCost)] = &[
     (
         system_program::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_system_program::system_processor::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_system_program::system_processor::DEFAULT_COMPUTE_UNITS,
+            native_cost: 150,
         }),
     ),
     (
         compute_budget::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_compute_budget_program::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_compute_budget_program::DEFAULT_COMPUTE_UNITS,
+            native_cost: 150,
         }),
     ),
     (
         bpf_loader_upgradeable::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_bpf_loader_program::UPGRADEABLE_LOADER_COMPUTE_UNITS,
+            // native_cost: solana_bpf_loader_program::UPGRADEABLE_LOADER_COMPUTE_UNITS,
+            native_cost: 2_370,
         }),
     ),
     (
         bpf_loader_deprecated::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_bpf_loader_program::DEPRECATED_LOADER_COMPUTE_UNITS,
+            // native_cost: solana_bpf_loader_program::DEPRECATED_LOADER_COMPUTE_UNITS,
+            native_cost: 1_140,
         }),
     ),
     (
         bpf_loader::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_bpf_loader_program::DEFAULT_LOADER_COMPUTE_UNITS,
+            // native_cost: solana_bpf_loader_program::DEFAULT_LOADER_COMPUTE_UNITS,
+            native_cost: 570,
         }),
     ),
     (
         loader_v4::id(),
         BuiltinCost::NotMigrating(NotMigratingBuiltinCost {
-            native_cost: solana_loader_v4_program::DEFAULT_COMPUTE_UNITS,
+            // native_cost: solana_loader_v4_program::DEFAULT_COMPUTE_UNITS,
+            native_cost: 2_000,
         }),
     ),
     // Note: These are precompile, run directly in bank during sanitizing;
