@@ -46,9 +46,6 @@
 //! # Ok::<(), anyhow::Error>(())
 //! ```
 
-#[cfg(feature = "bincode")]
-use crate::Sysvar;
-pub use solana_sdk_ids::sysvar::stake_history::{check_id, id, ID};
 #[deprecated(
     since = "2.2.0",
     note = "Use solana_stake_interface::stake_history instead"
@@ -56,6 +53,9 @@ pub use solana_sdk_ids::sysvar::stake_history::{check_id, id, ID};
 pub use crate::stake_history_impl::{
     StakeHistory, StakeHistoryEntry, StakeHistoryGetEntry, MAX_ENTRIES,
 };
+#[cfg(feature = "bincode")]
+use crate::Sysvar;
+pub use solana_sdk_ids::sysvar::stake_history::{check_id, id, ID};
 use {crate::get_sysvar, solana_clock::Epoch};
 
 #[cfg(feature = "bincode")]
