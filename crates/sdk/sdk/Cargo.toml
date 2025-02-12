@@ -81,7 +81,7 @@ frozen-abi = [
     "solana-transaction-error/frozen-abi"
 ]
 # Enables the "vendored" feature of openssl inside of secp256r1-program
-openssl-vendored = ["solana-precompiles/openssl-vendored"]
+# openssl-vendored = ["solana-precompiles/openssl-vendored"]
 
 [dependencies]
 bincode = { workspace = true }

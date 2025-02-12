@@ -22,7 +22,7 @@ solana-secp256r1-program = { workspace = true, default-features = false }
 
 [features]
 # Enables the "vendored" feature of openssl inside of secp256r1-program
-openssl-vendored = ["solana-secp256r1-program/openssl-vendored"]
+# openssl-vendored = ["solana-secp256r1-program/openssl-vendored"]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

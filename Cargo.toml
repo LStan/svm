@@ -166,7 +166,7 @@ num-bigint = "0.4.6"
 num-derive = "0.4"
 num_enum = "0.7.3"
 num-traits = "0.2"
-openssl = "0.10"
+# openssl = "0.10"
 parking_lot = "0.12"
 pbkdf2 = { version = "0.11.0", default-features = false }
 percentage = "0.1.0"
@@ -395,3 +395,6 @@ opt-level = 3
 
 [lints]
 workspace = true
+
+[patch.crates-io]
+getrandom = { git = "https://github.com/nitro-svm/getrandom", branch = "0.1-zkvm" }
