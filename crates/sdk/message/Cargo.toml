@@ -25,9 +25,6 @@ solana-pubkey = { workspace = true }
 solana-sanitize = { workspace = true }
 solana-sdk-ids = { workspace = true }
 solana-short-vec = { workspace = true, optional = true }
-solana-system-interface = { workspace = true, optional = true, features = [
-    "bincode",
-] }
 solana-transaction-error = { workspace = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
@@ -37,7 +34,6 @@ wasm-bindgen = { workspace = true }
 bincode = [
     "dep:bincode",
     "dep:solana-bincode",
-    "dep:solana-system-interface",
     "serde",
 ]
 blake3 = ["dep:blake3"]

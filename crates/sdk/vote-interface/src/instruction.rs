@@ -248,22 +248,6 @@ impl VoteInstruction {
     }
 }
 
-#[cfg(feature = "bincode")]
-fn initialize_account(vote_pubkey: &Pubkey, vote_init: &VoteInit) -> Instruction {
-    let account_metas = vec![
-        AccountMeta::new(*vote_pubkey, false),
-        AccountMeta::new_readonly(sysvar::rent::id(), false),
-        AccountMeta::new_readonly(sysvar::clock::id(), false),
-        AccountMeta::new_readonly(vote_init.node_pubkey, true),
-    ];
-
-    Instruction::new_with_bincode(
-        id(),
-        &VoteInstruction::InitializeAccount(*vote_init),
-        account_metas,
-    )
-}
-
 pub struct CreateVoteAccountConfig<'a> {
     pub space: u64,
     pub with_seed: Option<(&'a Pubkey, &'a str)>,
@@ -276,25 +260,6 @@ impl Default for CreateVoteAccountConfig<'_> {
             with_seed: None,
         }
     }
-}
-
-#[cfg(feature = "bincode")]
-pub fn create_account_with_config(
-    from_pubkey: &Pubkey,
-    vote_pubkey: &Pubkey,
-    vote_init: &VoteInit,
-    lamports: u64,
-    config: CreateVoteAccountConfig,
-) -> Vec<Instruction> {
-    let create_ix = solana_system_interface::instruction::create_account(
-        from_pubkey,
-        vote_pubkey,
-        lamports,
-        config.space,
-        &id(),
-    );
-    let init_ix = initialize_account(vote_pubkey, vote_init);
-    vec![create_ix, init_ix]
 }
 
 #[cfg(feature = "bincode")]

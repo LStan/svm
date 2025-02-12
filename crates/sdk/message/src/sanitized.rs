@@ -18,10 +18,6 @@ use {
     std::{borrow::Cow, collections::HashSet, convert::TryFrom},
 };
 
-// inlined to avoid solana_nonce dep
-#[cfg(feature = "bincode")]
-const NONCED_TX_MARKER_IX_INDEX: u8 = 0;
-
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct LegacyMessage<'a> {
     /// Legacy message
@@ -326,37 +322,6 @@ impl SanitizedMessage {
                     .map(usize::from)
                     .filter(|index| self.is_signer(*index))
                     .filter_map(|signer_index| self.account_keys().get(signer_index))
-            })
-    }
-
-    #[cfg(feature = "bincode")]
-    /// If the message uses a durable nonce, return the pubkey of the nonce account
-    pub fn get_durable_nonce(&self) -> Option<&Pubkey> {
-        self.instructions()
-            .get(NONCED_TX_MARKER_IX_INDEX as usize)
-            .filter(
-                |ix| match self.account_keys().get(ix.program_id_index as usize) {
-                    Some(program_id) => solana_sdk_ids::system_program::check_id(program_id),
-                    _ => false,
-                },
-            )
-            .filter(|ix| {
-                matches!(
-                    solana_bincode::limited_deserialize(
-                        &ix.data, 4 /* serialized size of AdvanceNonceAccount */
-                    ),
-                    Ok(solana_system_interface::instruction::SystemInstruction::AdvanceNonceAccount)
-                )
-            })
-            .and_then(|ix| {
-                ix.accounts.first().and_then(|idx| {
-                    let idx = *idx as usize;
-                    if !self.is_writable(idx) {
-                        None
-                    } else {
-                        self.account_keys().get(idx)
-                    }
-                })
             })
     }
 

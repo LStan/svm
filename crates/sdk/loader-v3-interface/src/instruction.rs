@@ -2,11 +2,10 @@
 
 #[cfg(feature = "bincode")]
 use {
-    crate::{get_program_data_address, state::UpgradeableLoaderState},
-    solana_instruction::{error::InstructionError, AccountMeta, Instruction},
+    crate::get_program_data_address,
+    solana_instruction::{AccountMeta, Instruction},
     solana_pubkey::Pubkey,
     solana_sdk_ids::{bpf_loader_upgradeable::id, sysvar},
-    solana_system_interface::instruction as system_instruction,
 };
 
 #[repr(u8)]
@@ -174,34 +173,6 @@ pub enum UpgradeableLoaderInstruction {
 }
 
 #[cfg(feature = "bincode")]
-/// Returns the instructions required to initialize a Buffer account.
-pub fn create_buffer(
-    payer_address: &Pubkey,
-    buffer_address: &Pubkey,
-    authority_address: &Pubkey,
-    lamports: u64,
-    program_len: usize,
-) -> Result<Vec<Instruction>, InstructionError> {
-    Ok(vec![
-        system_instruction::create_account(
-            payer_address,
-            buffer_address,
-            lamports,
-            UpgradeableLoaderState::size_of_buffer(program_len) as u64,
-            &id(),
-        ),
-        Instruction::new_with_bincode(
-            id(),
-            &UpgradeableLoaderInstruction::InitializeBuffer,
-            vec![
-                AccountMeta::new(*buffer_address, false),
-                AccountMeta::new_readonly(*authority_address, false),
-            ],
-        ),
-    ])
-}
-
-#[cfg(feature = "bincode")]
 /// Returns the instructions required to write a chunk of program data to a
 /// buffer account.
 pub fn write(
@@ -218,45 +189,6 @@ pub fn write(
             AccountMeta::new_readonly(*authority_address, true),
         ],
     )
-}
-
-#[deprecated(since = "2.2.0", note = "Use loader-v4 instead")]
-#[cfg(feature = "bincode")]
-/// Returns the instructions required to deploy a program with a specified
-/// maximum program length.  The maximum length must be large enough to
-/// accommodate any future upgrades.
-pub fn deploy_with_max_program_len(
-    payer_address: &Pubkey,
-    program_address: &Pubkey,
-    buffer_address: &Pubkey,
-    upgrade_authority_address: &Pubkey,
-    program_lamports: u64,
-    max_data_len: usize,
-) -> Result<Vec<Instruction>, InstructionError> {
-    let programdata_address = get_program_data_address(program_address);
-    Ok(vec![
-        system_instruction::create_account(
-            payer_address,
-            program_address,
-            program_lamports,
-            UpgradeableLoaderState::size_of_program() as u64,
-            &id(),
-        ),
-        Instruction::new_with_bincode(
-            id(),
-            &UpgradeableLoaderInstruction::DeployWithMaxDataLen { max_data_len },
-            vec![
-                AccountMeta::new(*payer_address, true),
-                AccountMeta::new(programdata_address, false),
-                AccountMeta::new(*program_address, false),
-                AccountMeta::new(*buffer_address, false),
-                AccountMeta::new_readonly(sysvar::rent::id(), false),
-                AccountMeta::new_readonly(sysvar::clock::id(), false),
-                AccountMeta::new_readonly(solana_sdk_ids::system_program::id(), false),
-                AccountMeta::new_readonly(*upgrade_authority_address, true),
-            ],
-        ),
-    ])
 }
 
 #[cfg(feature = "bincode")]

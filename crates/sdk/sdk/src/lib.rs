@@ -219,12 +219,7 @@ pub use solana_serde as deserialize_utils;
 pub use solana_serde_varint as serde_varint;
 #[deprecated(since = "2.1.0", note = "Use `solana-short-vec` crate instead")]
 pub use solana_short_vec as short_vec;
-#[cfg(feature = "full")]
-#[deprecated(
-    since = "2.2.0",
-    note = "Use `solana-system-transaction` crate instead"
-)]
-pub use solana_system_transaction as system_transaction;
+
 #[deprecated(since = "2.2.0", note = "Use `solana-time-utils` crate instead")]
 pub use solana_time_utils as timing;
 #[cfg(feature = "full")]

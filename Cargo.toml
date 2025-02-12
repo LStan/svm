@@ -106,7 +106,6 @@ members = [
     "crates/sdk/slot-hashes",
     "crates/sdk/slot-history",
     "crates/sdk/stable-layout",
-    "crates/sdk/system-transaction",
     "crates/sdk/sysvar",
     "crates/sdk/sysvar-id",
     "crates/sdk/time-utils",
@@ -289,7 +288,6 @@ solana-stake-interface = { version = "1.2.1" }
 solana-svm-rent-collector = { path = "crates/svm-rent-collector", version = "=2.2.0" }
 solana-svm-transaction = { path = "crates/svm-transaction", version = "=2.2.0" }
 solana-system-interface = "1.0"
-solana-system-transaction = { path = "crates/sdk/system-transaction", version = "=2.2.0" }
 solana-sysvar = { path = "crates/sdk/sysvar", version = "=2.2.0" }
 solana-sysvar-id = { path = "crates/sdk/sysvar-id", version = "=2.2.0" }
 solana-time-utils = { path = "crates/sdk/time-utils", version = "=2.2.0" }
