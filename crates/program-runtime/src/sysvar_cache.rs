@@ -350,19 +350,6 @@ pub mod get_sysvar_with_account_check {
         invoke_context.get_sysvar_cache().get_recent_blockhashes()
     }
 
-    pub fn stake_history(
-        invoke_context: &InvokeContext,
-        instruction_context: &InstructionContext,
-        instruction_account_index: IndexOfAccount,
-    ) -> Result<Arc<StakeHistory>, InstructionError> {
-        check_sysvar_account::<StakeHistory>(
-            invoke_context.transaction_context,
-            instruction_context,
-            instruction_account_index,
-        )?;
-        invoke_context.get_sysvar_cache().get_stake_history()
-    }
-
     pub fn last_restart_slot(
         invoke_context: &InvokeContext,
         instruction_context: &InstructionContext,

@@ -146,7 +146,7 @@ solana-secp256k1-program = { workspace = true, optional = true, features = [
     "bincode",
 ] }
 solana-secp256k1-recover = { workspace = true }
-solana-secp256r1-program = { workspace = true, default-features = false }
+# solana-secp256r1-program = { workspace = true, default-features = false }
 solana-seed-derivable = { workspace = true, optional = true }
 solana-seed-phrase = { workspace = true, optional = true }
 solana-serde = { workspace = true }

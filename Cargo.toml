@@ -16,6 +16,7 @@ members = [
     "crates/program-runtime",
     "crates/svm-rent-collector",
     "crates/svm-transaction",
+    "crates/system-interface",
     "crates/type-overrides",
     "crates/programs/bpf_loader",
     "crates/programs/loader-v4",
@@ -284,10 +285,9 @@ solana-signer = { path = "crates/sdk/signer", version = "=2.2.0" }
 solana-slot-hashes = { path = "crates/sdk/slot-hashes", version = "=2.2.0" }
 solana-slot-history = { path = "crates/sdk/slot-history", version = "=2.2.0" }
 solana-stable-layout = { path = "crates/sdk/stable-layout", version = "=2.2.0" }
-solana-stake-interface = { version = "1.2.1" }
 solana-svm-rent-collector = { path = "crates/svm-rent-collector", version = "=2.2.0" }
 solana-svm-transaction = { path = "crates/svm-transaction", version = "=2.2.0" }
-solana-system-interface = "1.0"
+solana-system-interface = { path = "crates/system-interface" }
 solana-sysvar = { path = "crates/sdk/sysvar", version = "=2.2.0" }
 solana-sysvar-id = { path = "crates/sdk/sysvar-id", version = "=2.2.0" }
 solana-time-utils = { path = "crates/sdk/time-utils", version = "=2.2.0" }
@@ -381,61 +381,6 @@ frozen-abi = [
     "solana-program-runtime/frozen-abi",
     "solana-sdk/frozen-abi",
 ]
-
-[patch.crates-io]
-
-# We include the following crates as our dependencies above from crates.io:
-#
-#  * spl-associated-token-account
-#  * spl-instruction-padding
-#  * spl-memo
-#  * spl-pod
-#  * spl-token
-#  * spl-token-2022
-#  * spl-token-metadata-interface
-#
-# They, in turn, depend on a number of crates that we also include directly
-# using `path` specifications.  For example, `spl-token` depends on
-# `solana-program`.  And we explicitly specify `solana-program` above as a local
-# path dependency:
-#
-#     solana-program = { path = "../../sdk/program", version = "=1.16.0" }
-#
-# Unfortunately, Cargo will try to resolve the `spl-token` `solana-program`
-# dependency only using what is available on crates.io.  Crates.io normally
-# contains a previous version of these crates, and we end up with two versions
-# of `solana-program` and `solana-zk-token-sdk` and all of their dependencies in
-# our build tree.
-#
-# If you are developing downstream using non-crates-io solana-program (local or
-# forked repo, or from github rev, eg), duplicate the following patch statements
-# in your Cargo.toml. If you still hit duplicate-type errors with the patch
-# statements in place, run `cargo update -p solana-program` and/or `cargo update
-# -p solana-zk-token-sdk` to remove extraneous versions from your Cargo.lock
-# file.
-#
-# There is a similar override in `programs/sbf/Cargo.toml`.  Please keep both
-# comments and the overrides in sync.
-solana-clock = { path = "crates/sdk/clock" }
-solana-curve25519 = { path = "crates/curves/curve25519" }
-solana-account-info = { path = "crates/sdk/account-info" }
-solana-borsh = { path = "crates/sdk/borsh" }
-solana-cpi = { path = "crates/sdk/cpi" }
-solana-decode-error = { path = "crates/sdk/decode-error" }
-solana-frozen-abi = { path = "crates/sdk/frozen-abi" }
-solana-frozen-abi-macro = { path = "crates/sdk/frozen-abi/macro" }
-solana-hash = { path = "crates/sdk/hash" }
-solana-instruction = { path = "crates/sdk/instruction" }
-solana-msg = { path = "crates/sdk/msg" }
-solana-program = { path = "crates/sdk/program" }
-solana-program-entrypoint = { path = "crates/sdk/program-entrypoint" }
-solana-program-error = { path = "crates/sdk/program-error" }
-solana-program-option = { path = "crates/sdk/program-option" }
-solana-program-pack = { path = "crates/sdk/program-pack" }
-solana-pubkey = { path = "crates/sdk/pubkey" }
-solana-sha256-hasher = { path = "crates/sdk/sha256-hasher" }
-solana-sysvar-id = { path = "crates/sdk/sysvar-id" }
-
 
 # curve25519-dalek uses the simd backend by default in v4 if possible,
 # which has very slow performance on some platforms with opt-level 0,

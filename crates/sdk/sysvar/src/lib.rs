@@ -109,6 +109,7 @@ pub mod rewards;
 pub mod slot_hashes;
 pub mod slot_history;
 pub mod stake_history;
+mod stake_history_impl; 
 
 #[deprecated(
     since = "2.0.0",

@@ -623,8 +623,8 @@ pub mod sdk_ids {
                 address_lookup_table::program::id(),
                 loader_v4::id(),
                 stake::program::id(),
-                #[allow(deprecated)]
-                stake::config::id(),
+                // #[allow(deprecated)]
+                // stake::config::id(),
             ];
             sdk_ids.extend(sysvar::ALL_IDS.iter());
             sdk_ids
