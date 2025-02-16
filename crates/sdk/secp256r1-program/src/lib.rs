@@ -40,8 +40,8 @@ pub struct Secp256r1SignatureOffsets {
 #[cfg(all(not(target_arch = "wasm32"), not(target_os = "solana")))]
 mod target_arch {
     use {
-        crate::Secp256r1SignatureOffsets,
-        bytemuck::bytes_of,
+        // crate::Secp256r1SignatureOffsets,
+        // bytemuck::bytes_of,
         // openssl::{
         //     bn::{BigNum, BigNumContext},
         //     ec::{EcGroup, EcKey, EcPoint},
@@ -76,11 +76,11 @@ mod target_arch {
     ];
 
     // Computed half order
-    const SECP256R1_HALF_ORDER: [u8; FIELD_SIZE] = [
-        0x7F, 0xFF, 0xFF, 0xFF, 0x80, 0x00, 0x00, 0x00, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-        0xFF, 0xDE, 0x73, 0x7D, 0x56, 0xD3, 0x8B, 0xCF, 0x42, 0x79, 0xDC, 0xE5, 0x61, 0x7E, 0x31,
-        0x92, 0xA8,
-    ];
+    // const SECP256R1_HALF_ORDER: [u8; FIELD_SIZE] = [
+    //     0x7F, 0xFF, 0xFF, 0xFF, 0x80, 0x00, 0x00, 0x00, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+    //     0xFF, 0xDE, 0x73, 0x7D, 0x56, 0xD3, 0x8B, 0xCF, 0x42, 0x79, 0xDC, 0xE5, 0x61, 0x7E, 0x31,
+    //     0x92, 0xA8,
+    // ];
     // Field size in bytes
     const FIELD_SIZE: usize = 32;
 
@@ -140,7 +140,7 @@ mod target_arch {
         // assert_eq!(pubkey.len(), COMPRESSED_PUBKEY_SERIALIZED_SIZE);
         // assert_eq!(signature.len(), SIGNATURE_SERIALIZED_SIZE);
 
-        let mut instruction_data = Vec::with_capacity(
+        let instruction_data = Vec::with_capacity(
             DATA_START
                 .saturating_add(SIGNATURE_SERIALIZED_SIZE)
                 .saturating_add(COMPRESSED_PUBKEY_SERIALIZED_SIZE)
@@ -177,8 +177,8 @@ mod target_arch {
     }
 
     pub fn verify(
-        data: &[u8],
-        instruction_datas: &[&[u8]],
+        _data: &[u8],
+        _instruction_datas: &[&[u8]],
         _feature_set: &FeatureSet,
     ) -> Result<(), PrecompileError> {
         // if data.len() < SIGNATURE_OFFSETS_START {
@@ -299,31 +299,31 @@ mod target_arch {
         Ok(())
     }
 
-    fn get_data_slice<'a>(
-        data: &'a [u8],
-        instruction_datas: &'a [&[u8]],
-        instruction_index: u16,
-        offset_start: u16,
-        size: usize,
-    ) -> Result<&'a [u8], PrecompileError> {
-        let instruction = if instruction_index == u16::MAX {
-            data
-        } else {
-            let signature_index = instruction_index as usize;
-            if signature_index >= instruction_datas.len() {
-                return Err(PrecompileError::InvalidDataOffsets);
-            }
-            instruction_datas[signature_index]
-        };
+    // fn get_data_slice<'a>(
+    //     data: &'a [u8],
+    //     instruction_datas: &'a [&[u8]],
+    //     instruction_index: u16,
+    //     offset_start: u16,
+    //     size: usize,
+    // ) -> Result<&'a [u8], PrecompileError> {
+    //     let instruction = if instruction_index == u16::MAX {
+    //         data
+    //     } else {
+    //         let signature_index = instruction_index as usize;
+    //         if signature_index >= instruction_datas.len() {
+    //             return Err(PrecompileError::InvalidDataOffsets);
+    //         }
+    //         instruction_datas[signature_index]
+    //     };
 
-        let start = offset_start as usize;
-        let end = start.saturating_add(size);
-        if end > instruction.len() {
-            return Err(PrecompileError::InvalidDataOffsets);
-        }
+    //     let start = offset_start as usize;
+    //     let end = start.saturating_add(size);
+    //     if end > instruction.len() {
+    //         return Err(PrecompileError::InvalidDataOffsets);
+    //     }
 
-        Ok(&instruction[start..end])
-    }
+    //     Ok(&instruction[start..end])
+    // }
 }
 
 #[cfg(any(target_arch = "wasm32", target_os = "solana"))]

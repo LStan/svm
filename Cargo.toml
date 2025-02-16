@@ -20,6 +20,7 @@ members = [
     "crates/type-overrides",
     "crates/programs/bpf_loader",
     "crates/programs/loader-v4",
+    "crates/programs/system",
     "crates/sdk/account",
     "crates/sdk/account-info",
     "crates/sdk/address-lookup-table-interface",
@@ -288,6 +289,7 @@ solana-stable-layout = { path = "crates/sdk/stable-layout", version = "=2.2.0" }
 solana-svm-rent-collector = { path = "crates/svm-rent-collector", version = "=2.2.0" }
 solana-svm-transaction = { path = "crates/svm-transaction", version = "=2.2.0" }
 solana-system-interface = { path = "crates/system-interface" }
+solana-system-program = { path = "crates/programs/system", version = "=2.2.0" }
 solana-sysvar = { path = "crates/sdk/sysvar", version = "=2.2.0" }
 solana-sysvar-id = { path = "crates/sdk/sysvar-id", version = "=2.2.0" }
 solana-time-utils = { path = "crates/sdk/time-utils", version = "=2.2.0" }

@@ -3235,6 +3235,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-system-program"
+version = "2.2.0"
+dependencies = [
+ "bincode",
+ "log",
+ "serde",
+ "serde_derive",
+ "solana-account",
+ "solana-bincode",
+ "solana-instruction",
+ "solana-log-collector",
+ "solana-nonce",
+ "solana-nonce-account",
+ "solana-packet",
+ "solana-program-runtime",
+ "solana-pubkey",
+ "solana-sdk-ids",
+ "solana-system-interface",
+ "solana-sysvar",
+ "solana-transaction-context",
+ "solana-type-overrides",
+]
+
+[[package]]
 name = "solana-sysvar"
 version = "2.2.0"
 dependencies = [
