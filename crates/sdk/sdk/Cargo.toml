@@ -33,7 +33,6 @@ full = [
     "dep:solana-ed25519-program",
     "dep:solana-commitment-config",
     "dep:solana-compute-budget-interface",
-    "dep:solana-genesis-config",
     "dep:solana-hard-forks",
     "dep:solana-keypair",
     "dep:solana-offchain-message",
@@ -67,7 +66,6 @@ frozen-abi = [
     "solana-fee-structure/frozen-abi",
     "solana-account/frozen-abi",
     "solana-cluster-type/frozen-abi",
-    "solana-genesis-config/frozen-abi",
     "solana-hard-forks/frozen-abi",
     "solana-inflation/frozen-abi",
     "solana-packet/frozen-abi",
@@ -107,9 +105,6 @@ solana-epoch-info = { workspace = true, features = ["serde"] }
 solana-epoch-rewards-hasher = { workspace = true }
 solana-feature-set = { workspace = true }
 solana-fee-structure = { workspace = true, features = ["serde"] }
-solana-genesis-config = { workspace = true, features = [
-    "serde"
-], optional = true }
 solana-hard-forks = { workspace = true, features = [
     "serde",
 ], optional = true }

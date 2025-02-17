@@ -17,7 +17,7 @@ solana-clock = { workspace = true }
 solana-epoch-schedule = { workspace = true }
 solana-frozen-abi = { workspace = true, optional = true }
 solana-frozen-abi-macro = { workspace = true, optional = true }
-solana-genesis-config = { workspace = true }
+# solana-genesis-config = { workspace = true }
 solana-pubkey = { workspace = true }
 solana-rent = { workspace = true }
 solana-sdk-ids = { workspace = true }

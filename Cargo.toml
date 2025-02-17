@@ -51,7 +51,6 @@ members = [
     "crates/sdk/fee-structure",
     "crates/sdk/frozen-abi",
     "crates/sdk/frozen-abi/macro",
-    "crates/sdk/genesis-config",
     "crates/sdk/hard-forks",
     "crates/sdk/hash",
     "crates/sdk/inflation",
@@ -224,11 +223,10 @@ solana-fee-calculator = { path = "crates/sdk/fee-calculator", version = "=2.2.0"
 solana-fee-structure = { path = "crates/sdk/fee-structure", version = "=2.2.0" }
 solana-frozen-abi = { path = "crates/sdk/frozen-abi", version = "=2.2.0" }
 solana-frozen-abi-macro = { path = "crates/sdk/frozen-abi/macro", version = "=2.2.0" }
-solana-genesis-config = { path = "crates/sdk/genesis-config", version = "=2.2.0" }
 solana-hard-forks = { path = "crates/sdk/hard-forks", version = "=2.2.0" }
-solana-hash = { path = "crates/sdk/hash", version = "=2.2.0" }
+solana-hash = { path = "crates/sdk/hash", version = "=2.2.0", default-features = false }
 solana-inflation = { path = "crates/sdk/inflation", version = "=2.2.0" }
-solana-instruction = { path = "crates/sdk/instruction", version = "=2.2.0" }
+solana-instruction = { path = "crates/sdk/instruction", version = "=2.2.0", default-features = false }
 solana-instructions-sysvar = { path = "crates/sdk/instructions-sysvar", version = "=2.2.0" }
 solana-keccak-hasher = { path = "crates/sdk/keccak-hasher", version = "=2.2.0" }
 solana-keypair = { path = "crates/sdk/keypair", version = "=2.2.0" }
@@ -251,14 +249,14 @@ solana-poseidon = { path = "crates/poseidon", version = "=2.2.0" }
 solana-precompile-error = { path = "crates/sdk/precompile-error", version = "=2.2.0" }
 solana-precompiles = { path = "crates/sdk/precompiles", version = "=2.2.0" }
 solana-presigner = { path = "crates/sdk/presigner", version = "=2.2.0" }
-solana-program = { path = "crates/sdk/program", version = "=2.2.0" }
+solana-program = { path = "crates/sdk/program", version = "=2.2.0", default-features = false }
 solana-program-entrypoint = { path = "crates/sdk/program-entrypoint", version = "=2.2.0" }
 solana-program-error = { path = "crates/sdk/program-error", version = "=2.2.0" }
 solana-program-memory = { path = "crates/sdk/program-memory", version = "=2.2.0" }
 solana-program-option = { path = "crates/sdk/program-option", version = "=2.2.0" }
 solana-program-pack = { path = "crates/sdk/program-pack", version = "=2.2.0" }
 solana-program-runtime = { path = "crates/program-runtime", version = "=2.2.0" }
-solana-pubkey = { path = "crates/sdk/pubkey", version = "=2.2.0" }
+solana-pubkey = { path = "crates/sdk/pubkey", version = "=2.2.0", default-features = false }
 solana-quic-definitions = { path = "crates/sdk/quic-definitions", version = "=2.2.0" }
 solana-rent = { path = "crates/sdk/rent", version = "=2.2.0" }
 solana-rent-collector = { path = "crates/sdk/rent-collector", version = "=2.2.0" }
@@ -272,7 +270,7 @@ solana-sdk-ids = { path = "crates/sdk/sdk-ids", version = "=2.2.0" }
 solana-sdk-macro = { path = "crates/sdk/macro", version = "=2.2.0" }
 solana-secp256k1-program = { path = "crates/sdk/secp256k1-program", version = "=2.2.0" }
 solana-secp256k1-recover = { path = "crates/sdk/secp256k1-recover", version = "=2.2.0" }
-solana-secp256r1-program = { path = "crates/sdk/secp256r1-program", version = "=2.2.0" }
+solana-secp256r1-program = { path = "crates/sdk/secp256r1-program", version = "=2.2.0", default-features = false }
 solana-seed-derivable = { path = "crates/sdk/seed-derivable", version = "=2.2.0" }
 solana-seed-phrase = { path = "crates/sdk/seed-phrase", version = "=2.2.0" }
 solana-serde = { path = "crates/sdk/serde", version = "=2.2.0" }
@@ -399,4 +397,4 @@ opt-level = 3
 workspace = true
 
 [patch.crates-io]
-getrandom = { git = "https://github.com/nitro-svm/getrandom", branch = "0.1-zkvm" }
+getrandom = { git = "https://github.com/LStan/getrandom", branch = "0.1-zkvm" }

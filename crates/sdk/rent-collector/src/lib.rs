@@ -6,7 +6,7 @@ use {
     solana_account::{AccountSharedData, ReadableAccount, WritableAccount},
     solana_clock::Epoch,
     solana_epoch_schedule::EpochSchedule,
-    solana_genesis_config::GenesisConfig,
+    // solana_genesis_config::GenesisConfig,
     solana_pubkey::Pubkey,
     solana_rent::{Rent, RentDue},
     solana_sdk_ids::incinerator,
@@ -31,7 +31,8 @@ impl Default for RentCollector {
             epoch: Epoch::default(),
             epoch_schedule: EpochSchedule::default(),
             // derive default value using GenesisConfig::default()
-            slots_per_year: GenesisConfig::default().slots_per_year(),
+            // slots_per_year: GenesisConfig::default().slots_per_year(),
+            slots_per_year: 78892314.984,
             rent: Rent::default(),
         }
     }
