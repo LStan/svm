@@ -360,7 +360,7 @@ thiserror = { workspace = true }
 
 [lib]
 crate-type = ["lib"]
-name = "solana_svm"
+name = "solana_svm_sp1"
 
 [workspace.lints.rust.unexpected_cfgs]
 level = "warn"
